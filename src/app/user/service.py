@@ -1,5 +1,5 @@
 from time import time
-from typing import Union, Optional
+from typing import Union
 
 import bcrypt
 import jwt
@@ -7,16 +7,15 @@ from pydantic import EmailStr
 from starlette import status
 from starlette.responses import JSONResponse
 from tortoise.exceptions import DoesNotExist
-from src.settings import TOKEN_KEY, TOKEN_TIME
-from src.user.model import User
-from src.user.schemas import UserIn
-import secrets
+from src.app.settings import TOKEN_KEY, TOKEN_TIME
+from src.app.user.model import User
+from src.app.user.schemas import RegisterUserIn, LoginUserIn
 
 
 class UserService:
 
-    async def create_user(self, user: UserIn) -> Optional[JSONResponse]:
-        password: Union[str, bytes] = secrets.token_urlsafe(4)
+    async def create_user(self, user: RegisterUserIn) -> Union[JSONResponse, User]:
+        password_hash: str = user.dict()["password"].encode()
         email: EmailStr = user.dict()["email"]
 
         if await User.filter(email=email):
@@ -24,10 +23,11 @@ class UserService:
                 "detail": "Данный пользователь уже существует"
             }, status.HTTP_400_BAD_REQUEST)
 
-        password = password.encode()
-        await User.create(**user.dict(), password_hash=password)
+        del user.dict()["password"]
 
-    async def auth_user(self, user: UserIn) -> Union[None, dict, JSONResponse]:
+        return await User.create(**user.dict(), password_hash=password_hash)
+
+    async def auth_user(self, user: LoginUserIn) -> Union[dict, JSONResponse]:
         email: EmailStr = user.dict()["email"]
         password: bytes = user.dict()["password"].encode()
         try:
