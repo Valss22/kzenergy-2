@@ -1,0 +1,17 @@
+aiosqlite==0.17.0
+anyio==3.6.1
+asyncpg==0.25.0
+bcrypt==3.2.2
+cffi==1.15.0
+fastapi==0.78.0
+idna==3.3
+iso8601==1.0.2
+pycparser==2.21
+pydantic==1.9.1
+PyJWT==2.4.0
+pypika-tortoise==0.1.5
+pytz==2022.1
+sniffio==1.2.0
+starlette==0.19.1
+tortoise-orm==0.19.1
+typing_extensions==4.2.0
