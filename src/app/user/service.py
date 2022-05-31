@@ -1,6 +1,5 @@
 from time import time
 from typing import Union
-
 import bcrypt
 import jwt
 from pydantic import EmailStr
@@ -13,8 +12,18 @@ from src.app.user.schemas import RegisterUserIn, LoginUserIn
 
 
 class UserService:
+    async def get_response_with_token(self, user: User):
+        payload: dict = {
+            "id": str(user.id),
+            "email": user.email,
+            "exp": time() + TOKEN_TIME
+        }
+        return {
+            **user.__dict__,
+            "token": jwt.encode(payload, TOKEN_KEY),
+        }
 
-    async def create_user(self, user: RegisterUserIn) -> Union[JSONResponse, User]:
+    async def create_user(self, user: RegisterUserIn) -> Union[JSONResponse, dict]:
         password_hash: str = user.dict()["password"].encode()
         email: EmailStr = user.dict()["email"]
 
@@ -25,7 +34,11 @@ class UserService:
 
         del user.dict()["password"]
 
-        return await User.create(**user.dict(), password_hash=password_hash)
+        created_user = await User.create(
+            **user.dict(), password_hash=password_hash
+        )
+        await created_user.save()
+        return await self.get_response_with_token(created_user)
 
     async def auth_user(self, user: LoginUserIn) -> Union[dict, JSONResponse]:
         email: EmailStr = user.dict()["email"]
@@ -39,15 +52,7 @@ class UserService:
             )
 
         if bcrypt.checkpw(password, current_user.password_hash):
-            payload: dict = {
-                "id": str(current_user.id),
-                "email": current_user.email,
-                "exp": time() + TOKEN_TIME
-            }
-            return {
-                **current_user.__dict__,
-                "token": jwt.encode(payload, TOKEN_KEY),
-            }
+            return await self.get_response_with_token(current_user)
         return JSONResponse(
             {"detail": "Неверный пароль"},
             status.HTTP_400_BAD_REQUEST

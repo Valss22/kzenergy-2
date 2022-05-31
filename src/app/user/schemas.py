@@ -1,4 +1,3 @@
-from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, EmailStr, validator
 
@@ -21,13 +20,14 @@ class RegisterUserIn(LoginUserIn):
         return validate_fullname(v)
 
 
-class RegisterUserOut(BaseModel):
+class UserOut(BaseModel):
     id: UUID
     role: Roles
     fullname: str
     email: EmailStr
     phone: str
-
-
-class LoginUserOut(RegisterUserOut):
     token: str
+
+
+# class LoginUserOut(RegisterUserOut):
+#     token: str
