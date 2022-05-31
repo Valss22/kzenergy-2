@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends
-from src.app.user.schemas import RegisterUserIn, UserOut, LoginUserIn
+from src.app.user.schemas import RegisterUserIn, LoginUserOut, LoginUserIn
 from src.app.user.service import UserService
 
 user_router = APIRouter(
@@ -7,7 +7,7 @@ user_router = APIRouter(
 )
 
 
-@user_router.post("/register/", response_model=UserOut)
+@user_router.post("/register/", response_model=LoginUserOut)
 async def register_user(
     user: RegisterUserIn,
     user_service: UserService = Depends()
@@ -15,7 +15,7 @@ async def register_user(
     return await user_service.create_user(user)
 
 
-@user_router.post("/login/", response_model=UserOut)
+@user_router.post("/login/", response_model=LoginUserOut)
 async def login_user(
     user: LoginUserIn,
     user_service: UserService = Depends()

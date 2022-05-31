@@ -1,4 +1,4 @@
-from typing import Union, Optional
+from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, EmailStr, validator
 
@@ -21,10 +21,13 @@ class RegisterUserIn(LoginUserIn):
         return validate_fullname(v)
 
 
-class UserOut(BaseModel):
+class RegisterUserOut(BaseModel):
     id: UUID
     role: Roles
     fullname: str
     email: EmailStr
     phone: str
-    token: Optional[str]
+
+
+class LoginUserOut(RegisterUserOut):
+    token: str
