@@ -9,6 +9,9 @@ from tortoise.exceptions import DoesNotExist
 from src.app.settings import TOKEN_KEY, TOKEN_TIME, SALT
 from src.app.user.model import User
 from src.app.user.schemas import RegisterUserIn, LoginUserIn
+from src.app.user.types import Roles
+
+ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
 
 class UserService:
@@ -23,14 +26,28 @@ class UserService:
             "token": jwt.encode(payload, TOKEN_KEY),
         }
 
+    def failed_response(self):
+        return JSONResponse({
+            "detail": "Auth failed"
+        }, status.HTTP_400_BAD_REQUEST)
+
     async def create_user(self, user: RegisterUserIn) -> Union[JSONResponse, dict]:
-        password = user.dict()["password"].encode()
+        role = user.dict()["role"]
         email: EmailStr = user.dict()["email"]
+
+        if role == Roles.ADMIN:
+            if email != ADMIN_EMAIL:
+                return JSONResponse({
+                    "detail": "You dont have rights for this role"
+                }, status.HTTP_400_BAD_REQUEST)
+
+        password = user.dict()["password"].encode()
 
         if await User.filter(email=email):
             return JSONResponse({
-                "detail": "Данный пользователь уже существует"
+                "detail": "This email already exists"
             }, status.HTTP_400_BAD_REQUEST)
+
         del user.dict()["password"]
         created_user = await User.create(
             **user.dict(), password_hash=password
@@ -45,13 +62,9 @@ class UserService:
         try:
             current_user = await User.get(email=email)
         except DoesNotExist:
-            return JSONResponse(
-                {"detail": "Данного пользователя не существует"},
-                status.HTTP_400_BAD_REQUEST
-            )
+            return self.failed_response()
+
         if bcrypt.checkpw(password, current_user.password_hash):
             return await self.response_with_token(current_user)
-        return JSONResponse(
-            {"detail": "Неверный пароль"},
-            status.HTTP_400_BAD_REQUEST
-        )
+
+        return self.failed_response()
