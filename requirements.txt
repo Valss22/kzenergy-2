@@ -13,7 +13,9 @@ colorama==0.4.4
 dnspython==2.2.1
 email-validator==1.2.1
 fastapi==0.78.0
-h11==0.13.0
+h11==0.12.0
+httpcore==0.15.0
+httpx==0.23.0
 idna==3.3
 iniconfig==1.1.1
 iso8601==1.0.2
@@ -26,9 +28,11 @@ PyJWT==2.4.0
 pyparsing==3.0.9
 pypika-tortoise==0.1.5
 pytest==7.1.2
+pytest-asyncio==0.18.3
 python-dotenv==0.20.0
 pytz==2022.1
 requests==2.27.1
+rfc3986==1.5.0
 sniffio==1.2.0
 starlette==0.19.1
 tomli==2.0.1

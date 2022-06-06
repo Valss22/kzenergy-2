@@ -4,9 +4,8 @@ from tortoise.contrib.fastapi import register_tortoise
 
 from src.app.routers import api_router
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+from src.app.settings import APP_MODELS
 
 app = FastAPI()
 origins = ["*"]
@@ -28,10 +27,7 @@ register_tortoise(
            f'{os.getenv("HOST")}/'
            f'{os.getenv("DATABASE")}',
     # db_url=os.getenv("DATABASE_URL"),
-
-    modules={"models": [
-        "src.app.user.model",
-    ]},
+    modules={"models": APP_MODELS},
     generate_schemas=True,
     add_exception_handlers=True,
 )

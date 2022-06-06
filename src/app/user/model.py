@@ -9,4 +9,3 @@ class User(models.Model):
     role = fields.CharEnumField(Roles)
     password_hash = fields.BinaryField()
     phone = fields.CharField(max_length=15)
-

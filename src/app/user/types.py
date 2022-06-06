@@ -8,5 +8,3 @@ class Roles(Enum):
     FACILITY_WORKER_2 = "Facility worker 2"
     FACILITY_WORKER_3 = "Facility worker 3"
     ADMIN = "Admin"
-
-
