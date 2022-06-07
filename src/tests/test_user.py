@@ -1,47 +1,41 @@
-from time import time
-
-import bcrypt
-import jwt
-
-from src.app.settings import SALT, TOKEN_TIME, TOKEN_KEY
-from src.app.user.model import User
+import pytest
+from httpx import AsyncClient
 from src.app.user.types import Roles
 
-ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
-
-async def test_register_user(client):
-    request_body = {
-        "email": "deger.begerrr@gmail.com",
-        "password": "123",
+@pytest.fixture(scope="module")
+def user_req_body() -> dict:
+    login_req_body = {
+        "email": "test@gmail.com",
+        "password": "123"
+    }
+    register_req_body = login_req_body.copy()
+    register_req_body.update({
         "fullname": "Shok Vlad",
-        "role": Roles.ADMIN.value,
+        "role": Roles.ECOLOGIS.value,
         "phone": "87775556774"
+    })
+    return {
+        "register_req_body": register_req_body,
+        "login_req_body": login_req_body
     }
-    password = request_body["password"].encode()
-    del request_body["password"]
-    created_user = await User.create(
-        **request_body,
-        password_hash=bcrypt.hashpw(password, SALT)
-    )
-    await created_user.save()
-    payload = {
-        "id": str(created_user.id),
-        "email": created_user.email,
-        "exp": time() + TOKEN_TIME
-    }
-    request_body["password"] = password.decode()
+
+
+async def test_register_user(client: AsyncClient, user_req_body):
+    req_body = user_req_body["register_req_body"]
+    password = req_body["password"].encode()
+    req_body.update({"password": password.decode()})
     response = await client.post(
         "/user/register/",
-        json=request_body
+        json=req_body
     )
-    print(response.json())
     assert response.status_code == 200
-    assert response.json() == {
-        "id": str(created_user.id),
-        "role": Roles.ECOLOGIS.value,
-        "email": "test233@gmail.com",
-        "phone": "87775556774",
-        "fullname": "Shok Vlad",
-        "token": jwt.encode(payload, TOKEN_KEY)
-    }
+    assert list(response.json().keys()) == [
+        "id", "role",
+        "fullname", "email",
+        "phone", "token"
+    ]
+
+
+async def test_login_user(client: AsyncClient, user_req_body):
+    pass

@@ -1,5 +1,9 @@
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
+from starlette import status
 from starlette.middleware.cors import CORSMiddleware
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 from tortoise.contrib.fastapi import register_tortoise
 
 from src.app.routers import api_router
@@ -31,3 +35,15 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    if exc.errors():
+        print(exc.errors())
+
+    # if exc.errors()[0]["type"] == "IntegrityError":
+    #     return JSONResponse(
+    #         {"detail": "This email already exists"},
+    #         status.HTTP_400_BAD_REQUEST
+    #     )

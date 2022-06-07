@@ -2,6 +2,7 @@ from time import time
 from typing import Union
 import bcrypt
 import jwt
+from fastapi import HTTPException
 from pydantic import EmailStr
 from starlette import status
 from starlette.responses import JSONResponse
@@ -15,7 +16,14 @@ ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
 
 class UserService:
-    async def response_with_token(self, user: User):
+    async def check_email(self, email) -> None:
+        if await User.filter(email=email):
+            raise HTTPException(
+                status_code=400,
+                detail="This email already exists",
+            )
+
+    async def response_with_token(self, user: User) -> dict:
         payload: dict = {
             "id": str(user.id),
             "email": user.email,
@@ -26,7 +34,7 @@ class UserService:
             "token": jwt.encode(payload, TOKEN_KEY),
         }
 
-    def failed_response(self):
+    def failed_response(self) -> JSONResponse:
         return JSONResponse({
             "detail": "Auth failed"
         }, status.HTTP_400_BAD_REQUEST)
@@ -43,10 +51,7 @@ class UserService:
 
         password = user.dict()["password"].encode()
 
-        if await User.filter(email=email):
-            return JSONResponse({
-                "detail": "This email already exists"
-            }, status.HTTP_400_BAD_REQUEST)
+        await self.check_email(email)
 
         del user.dict()["password"]
         created_user = await User.create(
