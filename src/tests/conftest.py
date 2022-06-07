@@ -5,6 +5,11 @@ from src.app.settings import APP_MODELS
 import pytest
 from httpx import AsyncClient
 from tortoise import Tortoise
+from pytest_factoryboy import register
+
+from src.factory.user.factory import UserFactory
+
+register(UserFactory)
 
 DB_URL = os.environ.get("TEST_DB")
 
@@ -42,4 +47,3 @@ async def initialize_tests():
     await init()
     yield
     await Tortoise._drop_databases()
-
