@@ -1,5 +1,7 @@
 import pytest
 from httpx import AsyncClient
+
+from src.app.user.model import User
 from src.app.user.types import Roles
 
 
@@ -48,5 +50,12 @@ async def test_successful_login_user(client: AsyncClient, user_setup):
     assert list(response.json().keys()) == user_setup["response_keys"]
 
 
-async def test_unsuccessful_login_user(client: AsyncClient, user_setup, user):
-    assert user.email == "test2@gmail.com"
+async def test_unsuccessful_login_user(client: AsyncClient, user_setup):
+    req_body = user_setup["login_req_body"]
+    req_body.update({"email": "test2@gmail.com"})
+    response = await client.post(
+        "/user/login/",
+        json=req_body
+    )
+    assert response.status_code == 400
+    assert response.json() == {"detail": "Auth failed"}
