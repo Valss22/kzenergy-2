@@ -1,3 +1,7 @@
+# type: ignore
+import subprocess
+
+import uvicorn
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from starlette import status
@@ -47,3 +51,12 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     #         {"detail": "This email already exists"},
     #         status.HTTP_400_BAD_REQUEST
     #     )
+
+
+if __name__ == '__main__':
+    status_output: tuple[int, str] = subprocess.getstatusoutput("mypy .")
+    if status_output[0]:
+        print(status_output[1])
+    else:
+        uvicorn.run(app, host="127.0.0.1", port=8000)
+

@@ -7,5 +7,5 @@ class User(models.Model):
     fullname = fields.CharField(max_length=50)
     email = fields.CharField(max_length=50, unique=True)
     role = fields.CharEnumField(Roles)
-    password_hash = fields.BinaryField()
+    password_hash: bytes = fields.BinaryField()
     phone = fields.CharField(max_length=15)

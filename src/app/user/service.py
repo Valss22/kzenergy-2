@@ -42,7 +42,8 @@ class UserService:
     async def create_user(self, user: RegisterUserIn) -> Union[JSONResponse, dict]:
         role = user.dict()["role"]
         email: EmailStr = user.dict()["email"]
-
+        print(user.dict())
+        print(user.dict()["role"])
         if role == Roles.ADMIN:
             if email != ADMIN_EMAIL:
                 return JSONResponse({

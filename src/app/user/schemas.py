@@ -27,7 +27,3 @@ class UserOut(BaseModel):
     email: EmailStr
     phone: str
     token: str
-
-
-# class LoginUserOut(RegisterUserOut):
-#     token: str
