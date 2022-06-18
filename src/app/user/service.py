@@ -9,18 +9,25 @@ from starlette.responses import JSONResponse
 from tortoise.exceptions import DoesNotExist
 from src.app.settings import TOKEN_KEY, TOKEN_TIME, SALT
 from src.app.user.model import User
-from src.app.user.schemas import RegisterUserIn, LoginUserIn
+from src.app.user.schemas import UserRegisterIn, UserLoginIn
 from src.app.user.types import Roles
 
 ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
 
 class UserService:
-    async def check_email(self, email) -> None:
+    async def check_email(self, email: EmailStr) -> None:
         if await User.filter(email=email):
             raise HTTPException(
                 status_code=400,
                 detail="This email already exists",
+            )
+
+    def check_admin(self, role: Roles, email: EmailStr) -> None:
+        if role == Roles.ADMIN and email != ADMIN_EMAIL:
+            raise HTTPException(
+                status_code=400,
+                detail="You dont have rights for this role",
             )
 
     async def response_with_token(self, user: User) -> dict:
@@ -39,16 +46,11 @@ class UserService:
             "detail": "Auth failed"
         }, status.HTTP_400_BAD_REQUEST)
 
-    async def create_user(self, user: RegisterUserIn) -> Union[JSONResponse, dict]:
-        role = user.dict()["role"]
+    async def create_user(self, user: UserRegisterIn) -> Union[JSONResponse, dict]:
+        role: Roles = user.dict()["role"]
         email: EmailStr = user.dict()["email"]
-        print(user.dict())
-        print(user.dict()["role"])
-        if role == Roles.ADMIN:
-            if email != ADMIN_EMAIL:
-                return JSONResponse({
-                    "detail": "You dont have rights for this role"
-                }, status.HTTP_400_BAD_REQUEST)
+
+        self.check_admin(role, email)
 
         password = user.dict()["password"].encode()
 
@@ -60,11 +62,13 @@ class UserService:
         )
         created_user.password_hash = bcrypt.hashpw(password, SALT)
         await created_user.save(update_fields=["password_hash"])
+
         return await self.response_with_token(created_user)
 
-    async def auth_user(self, user: LoginUserIn) -> Union[dict, JSONResponse]:
+    async def auth_user(self, user: UserLoginIn) -> Union[dict, JSONResponse]:
         email: EmailStr = user.dict()["email"]
         password = user.dict()["password"].encode()
+
         try:
             current_user = await User.get(email=email)
         except DoesNotExist:

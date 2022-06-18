@@ -5,12 +5,12 @@ from src.app.user.types import Roles
 from src.app.user.validation.schemas.validators import validate_fullname
 
 
-class LoginUserIn(BaseModel):
+class UserLoginIn(BaseModel):
     email: EmailStr
     password: str
 
 
-class RegisterUserIn(LoginUserIn):
+class UserRegisterIn(UserLoginIn):
     fullname: str
     role: Roles
     phone: str

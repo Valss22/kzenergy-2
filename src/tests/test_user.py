@@ -1,5 +1,7 @@
 import pytest
 from httpx import AsyncClient
+
+from src.app.user.controllers import REGISTER_ENDPOINT, LOGIN_ENDPOINT
 from src.app.user.types import Roles
 
 
@@ -28,10 +30,8 @@ def user_setup() -> dict:
 
 async def test_register_user(client: AsyncClient, user_setup):
     req_body = user_setup["register_req_body"]
-    password = req_body["password"].encode()
-    req_body.update({"password": password.decode()})
     response = await client.post(
-        "/user/register/",
+        REGISTER_ENDPOINT,
         json=req_body
     )
     assert response.status_code == 200
@@ -43,10 +43,8 @@ async def test_register_admin_user(client: AsyncClient, user_setup):
     req_body.update({
         "role": Roles.ADMIN.value,
     })
-    password = req_body["password"].encode()
-    req_body.update({"password": password.decode()})
     response = await client.post(
-        "/user/register/",
+        REGISTER_ENDPOINT,
         json=req_body
     )
     assert response.status_code == 400
@@ -58,7 +56,7 @@ async def test_register_admin_user(client: AsyncClient, user_setup):
 async def test_successful_login_user(client: AsyncClient, user_setup):
     req_body = user_setup["login_req_body"]
     response = await client.post(
-        "/user/login/",
+        LOGIN_ENDPOINT,
         json=req_body
     )
     assert response.status_code == 200
@@ -69,7 +67,7 @@ async def test_unsuccessful_login_user(client: AsyncClient, user_setup):
     req_body = user_setup["login_req_body"]
     req_body.update({"email": "test2@gmail.com"})
     response = await client.post(
-        "/user/login/",
+        LOGIN_ENDPOINT,
         json=req_body
     )
     assert response.status_code == 400
