@@ -4,10 +4,8 @@ import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from tortoise.contrib.fastapi import register_tortoise
-
 from src.app.routers import api_router
 import os
-
 from src.app.settings import APP_MODELS
 
 app = FastAPI()
@@ -35,7 +33,7 @@ register_tortoise(
     add_exception_handlers=True,
 )
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     status_output: tuple[int, str] = subprocess.getstatusoutput("mypy .")
     if status_output[0]:
         print(status_output[1])

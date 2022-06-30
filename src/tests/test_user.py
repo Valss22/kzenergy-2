@@ -48,9 +48,6 @@ async def test_register_admin_user(client: AsyncClient, user_setup):
         json=req_body
     )
     assert response.status_code == 400
-    assert response.json() == {
-        "detail": "You dont have rights for this role"
-    }
 
 
 async def test_successful_login_user(client: AsyncClient, user_setup):
@@ -71,4 +68,3 @@ async def test_unsuccessful_login_user(client: AsyncClient, user_setup):
         json=req_body
     )
     assert response.status_code == 400
-    assert response.json() == {"detail": "Auth failed"}

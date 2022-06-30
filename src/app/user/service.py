@@ -16,6 +16,7 @@ ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
 
 class UserService:
+
     async def check_email(self, email: EmailStr) -> None:
         if await User.filter(email=email):
             raise HTTPException(
