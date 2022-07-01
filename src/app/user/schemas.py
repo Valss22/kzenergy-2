@@ -8,7 +8,7 @@ from src.app.user.validation.schemas.validators import validate_fullname
 class UserLoginIn(BaseModel):
     email: EmailStr
     password: str
-
+ 
 
 class UserRegisterIn(UserLoginIn):
     fullname: str

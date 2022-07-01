@@ -52,9 +52,7 @@ class UserService:
         email: EmailStr = user.dict()["email"]
 
         self.check_admin(role, email)
-
         password = user.dict()["password"].encode()
-
         await self.check_email(email)
 
         del user.dict()["password"]

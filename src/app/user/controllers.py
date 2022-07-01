@@ -1,5 +1,4 @@
 from typing import Final
-
 from fastapi import APIRouter, Depends
 from src.app.user.schemas import UserRegisterIn, UserLoginIn, UserOut
 from src.app.user.service import UserService
