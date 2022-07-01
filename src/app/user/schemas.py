@@ -1,7 +1,7 @@
 from uuid import UUID
 from pydantic import BaseModel, EmailStr, validator
 
-from src.app.user.types import Roles
+from src.app.user.types import Role
 from src.app.user.validation.schemas.validators import validate_fullname
 
 
@@ -12,7 +12,7 @@ class UserLoginIn(BaseModel):
 
 class UserRegisterIn(UserLoginIn):
     fullname: str
-    role: Roles
+    role: Role
     phone: str
 
     @validator("fullname")
@@ -22,7 +22,7 @@ class UserRegisterIn(UserLoginIn):
 
 class UserOut(BaseModel):
     id: UUID
-    role: Roles
+    role: Role
     fullname: str
     email: EmailStr
     phone: str

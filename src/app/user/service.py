@@ -10,7 +10,7 @@ from tortoise.exceptions import DoesNotExist
 from src.app.settings import TOKEN_KEY, TOKEN_TIME, SALT
 from src.app.user.model import User
 from src.app.user.schemas import UserRegisterIn, UserLoginIn
-from src.app.user.types import Roles
+from src.app.user.types import Role
 
 ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
@@ -24,8 +24,8 @@ class UserService:
                 detail="This email already exists",
             )
 
-    def check_admin(self, role: Roles, email: EmailStr) -> None:
-        if role == Roles.ADMIN and email != ADMIN_EMAIL:
+    def check_admin(self, role: Role, email: EmailStr) -> None:
+        if role == Role.ADMIN and email != ADMIN_EMAIL:
             raise HTTPException(
                 status_code=400,
                 detail="You dont have rights for this role",
@@ -48,7 +48,7 @@ class UserService:
         }, status.HTTP_400_BAD_REQUEST)
 
     async def create_user(self, user: UserRegisterIn) -> Union[JSONResponse, dict]:
-        role: Roles = user.dict()["role"]
+        role: Role = user.dict()["role"]
         email: EmailStr = user.dict()["email"]
 
         self.check_admin(role, email)

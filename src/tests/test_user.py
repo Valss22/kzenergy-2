@@ -2,7 +2,7 @@ import pytest
 from httpx import AsyncClient
 
 from src.app.user.controller import REGISTER_ENDPOINT, LOGIN_ENDPOINT
-from src.app.user.types import Roles
+from src.app.user.types import Role
 
 
 @pytest.fixture(scope="module")
@@ -14,7 +14,7 @@ def user_setup() -> dict:
     register_req_body = login_req_body.copy()
     register_req_body.update({
         "fullname": "Shok Vlad",
-        "role": Roles.ECOLOGIS.value,
+        "role": Role.ECOLOGIS.value,
         "phone": "87775556774"
     })
     return {
@@ -41,7 +41,7 @@ async def test_register_user(client: AsyncClient, user_setup):
 async def test_register_admin_user(client: AsyncClient, user_setup):
     req_body = user_setup["register_req_body"]
     req_body.update({
-        "role": Roles.ADMIN.value,
+        "role": Role.ADMIN.value,
     })
     response = await client.post(
         REGISTER_ENDPOINT,

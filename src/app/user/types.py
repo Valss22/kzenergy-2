@@ -2,7 +2,7 @@ from enum import Enum, unique
 
 
 @unique
-class Roles(Enum):
-    ADMIN = "Admin"
-    ECOLOGIS = "Ecologist"
-    FACILITY_WORKER = "Facility worker"
+class Role(Enum):
+    ADMIN = "Админ"
+    ECOLOGIS = "Эколог"
+    FACILITY_WORKER = "Работник объекта"

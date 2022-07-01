@@ -2,12 +2,12 @@ from enum import Enum
 from typing import TypedDict
 
 
-class TypesOfWaste(Enum):
-    SOLID = "solid"
-    LIQUID = "liquid"
+class AggregateState(Enum):
+    SOLID = "Твёрдое"
+    LIQUID = "Жидкое"
 
 
 class Waste(TypedDict):
     name: str
-    type: TypesOfWaste
+    type: AggregateState
     density: float
