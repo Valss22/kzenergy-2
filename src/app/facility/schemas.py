@@ -3,7 +3,6 @@ from pydantic import BaseModel
 from src.app.waste.types import Waste
 
 
-class CreateFacilityIn(BaseModel):
+class FacilityIn(BaseModel):
     name: str
-    description: str
     wastes: list[Waste]

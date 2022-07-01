@@ -1,7 +1,7 @@
 import pytest
 from httpx import AsyncClient
 
-from src.app.user.controllers import REGISTER_ENDPOINT, LOGIN_ENDPOINT
+from src.app.user.controller import REGISTER_ENDPOINT, LOGIN_ENDPOINT
 from src.app.user.types import Roles
 
 

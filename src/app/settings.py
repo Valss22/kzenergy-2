@@ -7,7 +7,11 @@ SALT: bytes = b'$2b$12$nHVrxcliGHquJB5pw0sC8O'
 TOKEN_KEY = "ndg5P:,gr6K3?ug3ZdT@dD"
 TOKEN_TIME = 604_800
 
-APP_MODELS = ["src.app.user.model"]
+APP_MODELS = [
+    "src.app.user.model",
+    "src.app.facility.model",
+    "src.app.waste.model",
+]
 DB_URL = f'postgres:'
 f'//{os.getenv("USER")}:'
 f'{os.getenv("PASSWORD")}@'
