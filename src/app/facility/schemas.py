@@ -10,6 +10,7 @@ class FacilityIn(BaseModel):
     wastes: list[str]
 
 
-class FacilityOut(FacilityIn):
+class FacilityOut(BaseModel):
     id: UUID
+    name: str
     wastes: list[WasteSchema]

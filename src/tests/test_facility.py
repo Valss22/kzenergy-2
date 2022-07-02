@@ -30,4 +30,6 @@ async def test_get_facilities(client: AsyncClient):
     response = await client.get(
         FACILITY_ENDPOINT
     )
+    assert len(response.json()) == 1
+    assert list(response.json()[0].keys()) == ["id", "name", "wastes"]
     assert response.status_code == 200
