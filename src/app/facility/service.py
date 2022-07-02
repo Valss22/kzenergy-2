@@ -30,5 +30,5 @@ class FacilityService:
 
         return response
 
-    async def delete_facilities(self, facility_id: str):
+    async def delete_facility(self, facility_id: str):
         await Facility.filter(id=facility_id).delete()

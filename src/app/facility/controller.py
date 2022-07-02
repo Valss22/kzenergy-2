@@ -22,9 +22,9 @@ async def get_facilities(
     return await facility_service.get_facilities()
 
 
-@facility_router.delete(FACILITY_ENDPOINT + "{id}")
+@facility_router.delete(FACILITY_ENDPOINT + "{facility_id}")
 async def get_facilities(
     facility_id: str,
     facility_service: FacilityService = Depends()
 ):
-    return await facility_service.delete_facilities(facility_id)
+    return await facility_service.delete_facility(facility_id)
