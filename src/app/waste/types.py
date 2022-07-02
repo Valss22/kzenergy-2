@@ -1,10 +1,6 @@
-from enum import Enum
 from typing import TypedDict
 
-
-class AggregateState(Enum):
-    SOLID = "Твёрдое"
-    LIQUID = "Жидкое"
+from src.app.ticket.types import AggregateState
 
 
 class Waste(TypedDict):

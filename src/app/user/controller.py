@@ -1,11 +1,10 @@
-from typing import Final
 from fastapi import APIRouter, Depends
 from src.app.user.schemas import UserRegisterIn, UserLoginIn, UserOut
 from src.app.user.service import UserService
 
 user_router = APIRouter()
-REGISTER_ENDPOINT: Final[str] = "/user/register/"
-LOGIN_ENDPOINT: Final[str] = "/user/login/"
+REGISTER_ENDPOINT = "/user/register/"
+LOGIN_ENDPOINT = "/user/login/"
 
 
 @user_router.post(REGISTER_ENDPOINT, response_model=UserOut)
