@@ -4,7 +4,7 @@ from src.app.facility.schemas import FacilityIn, FacilityOut
 from src.app.facility.service import FacilityService
 
 facility_router = APIRouter()
-FACILITY_ENDPOINT = "/admin/facility/"
+FACILITY_ENDPOINT = "/facility/"
 
 
 @facility_router.post(FACILITY_ENDPOINT)
