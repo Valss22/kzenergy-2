@@ -23,7 +23,7 @@ async def get_facilities(
 
 
 @facility_router.delete(FACILITY_ENDPOINT + "{facility_id}")
-async def get_facilities(
+async def delete_facilities(
     facility_id: str,
     facility_service: FacilityService = Depends()
 ):
