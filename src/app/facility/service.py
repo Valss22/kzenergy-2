@@ -17,3 +17,18 @@ class FacilityService:
             except IntegrityError:
                 waste_obj = await Waste.get(name=waste)
             await facility_obj.wastes.add(waste_obj)
+
+    async def get_facilities(self):
+        facilities = await Facility.all().prefetch_related("wastes")
+        response = []
+
+        for facility in facilities:
+            wastes = []
+            for waste in facility.wastes.related_objects:
+                wastes.append(waste)
+            response.append({**facility.__dict__, "wastes": wastes})
+
+        return response
+
+    async def delete_facilities(self, facility_id: str):
+        await Facility.filter(id=facility_id).delete()
