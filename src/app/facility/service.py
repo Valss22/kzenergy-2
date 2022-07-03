@@ -10,7 +10,9 @@ class FacilityService:
         facility_dict = facility.dict()
         wastes = facility_dict["wastes"]
         del facility_dict["wastes"]
-        facility_obj: Facility = await Facility.create(**facility_dict)
+
+        facility_obj = await Facility.create(**facility_dict)
+
         for waste in wastes:
             try:
                 waste_obj = await Waste.create(name=waste)

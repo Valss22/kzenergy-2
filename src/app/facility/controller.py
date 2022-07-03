@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends
-
 from src.app.facility.schemas import FacilityIn, FacilityOut
 from src.app.facility.service import FacilityService
 
