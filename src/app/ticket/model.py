@@ -7,7 +7,7 @@ from src.app.ticket.types import AggregateState, MeasureSystem, WasteDestination
 
 class Ticket(models.Model):
     id = fields.UUIDField(pk=True)
-    date = fields.DateField(default=datetime.date)
+    date = fields.DateField(default=datetime.date.today())
     facility = fields.ForeignKeyField("models.Facility")
     waste_destination_type = fields.CharEnumField(WasteDestinationType)
     aggregate_state = fields.CharEnumField(AggregateState)
@@ -17,4 +17,4 @@ class Ticket(models.Model):
     archived = fields.BooleanField(default=False)
     status = fields.CharEnumField(TicketStatus, default=TicketStatus.PENDING.value)
     report = fields.ForeignKeyField("models.Report", null=True)
-    excel_url = fields.CharField(max_length=100)
+    excel_url = fields.CharField(max_length=200)
