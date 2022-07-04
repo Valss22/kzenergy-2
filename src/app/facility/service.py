@@ -2,11 +2,12 @@ from tortoise.exceptions import IntegrityError
 
 from src.app.facility.model import Facility
 from src.app.facility.schemas import FacilityIn
+from src.app.ticket.model import Ticket
 from src.app.waste.model import Waste
 
 
 class FacilityService:
-    async def create_facility(self, facility: FacilityIn) -> None:
+    async def create_facility(self, facility: FacilityIn):
         facility_dict = facility.dict()
         wastes = facility_dict["wastes"]
         del facility_dict["wastes"]
@@ -31,6 +32,10 @@ class FacilityService:
             response.append({**facility.__dict__, "wastes": wastes})
 
         return response
+
+    async def get_facility_info(self, facility_id: str):
+        facility = await Facility.get(id=facility_id)
+        tickets = await Ticket.filter(facility__id=facility_id, archived=False)
 
     async def delete_facility(self, facility_id: str):
         await Facility.filter(id=facility_id).delete()

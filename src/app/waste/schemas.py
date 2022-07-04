@@ -3,6 +3,6 @@ from uuid import UUID
 from pydantic import BaseModel
 
 
-class WasteSchema(BaseModel):
+class WasteOut(BaseModel):
     id: UUID
     name: str
