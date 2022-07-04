@@ -37,16 +37,12 @@ class FacilityService:
             facility__id=facility_id,
             archived=False
         )
-        try:
-            permission_to_report = bool(await Report.tickets.filter(
-                archived=False,
-                facility__id=facility_id
-            ))
-        except AttributeError:
-            permission_to_report = True
-
+        report = await Report.get(
+            tickets__facility__id=facility_id,
+            archived=False
+        )
         return {
-            "permissionToReport": permission_to_report,
+            "report": report,
             "tickets": tickets
         }
 
