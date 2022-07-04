@@ -1,9 +1,9 @@
 from typing import Optional
 from uuid import UUID
-import datetime
+from datetime import datetime
 from pydantic.main import BaseModel
-from pydantic.utils import to_camel
 
+from src.app.settings import to_camel
 from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
 
 

@@ -19,3 +19,10 @@ f'//{os.getenv("USER")}:'
 f'{os.getenv("PASSWORD")}@'
 f'{os.getenv("HOST")}/'
 f'{os.getenv("DATABASE")}'
+
+
+def to_camel(string: str) -> str:
+    return ''.join(
+        word.capitalize() if string.split('_').index(word)
+        else word for word in string.split('_')
+    )

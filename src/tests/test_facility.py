@@ -1,3 +1,4 @@
+import pytest
 from httpx import AsyncClient
 from src.app.facility.controller import FACILITY_ENDPOINT
 from src.app.facility.model import Facility

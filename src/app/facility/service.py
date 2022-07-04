@@ -1,7 +1,8 @@
 from tortoise.exceptions import IntegrityError
 
 from src.app.facility.model import Facility
-from src.app.facility.schemas import FacilityIn
+from src.app.facility.schemas import FacilityIn, FacilityOut
+from src.app.report.model import Report
 from src.app.ticket.model import Ticket
 from src.app.waste.model import Waste
 
@@ -34,8 +35,22 @@ class FacilityService:
         return response
 
     async def get_facility_info(self, facility_id: str):
-        facility = await Facility.get(id=facility_id)
-        tickets = await Ticket.filter(facility__id=facility_id, archived=False)
+        tickets = await Ticket.filter(
+            facility__id=facility_id,
+            archived=False
+        )
+        try:
+            permission_to_report = bool(await Report.tickets.filter(
+                archived=False,
+                facility__id=facility_id
+            ))
+        except AttributeError:
+            permission_to_report = True
+
+        return {
+            "permissionToReport": permission_to_report,
+            "tickets": tickets
+        }
 
     async def delete_facility(self, facility_id: str):
         await Facility.filter(id=facility_id).delete()

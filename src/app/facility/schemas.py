@@ -1,8 +1,7 @@
 from uuid import UUID
-
 from pydantic import BaseModel
-from pydantic.utils import to_camel
 
+from src.app.settings import to_camel
 from src.app.ticket.schemas import TicketOut
 from src.app.waste.schemas import WasteOut
 
