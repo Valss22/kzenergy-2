@@ -1,7 +1,7 @@
 from tortoise.exceptions import IntegrityError
 
 from src.app.facility.model import Facility
-from src.app.facility.schemas import FacilityIn, FacilityOut
+from src.app.facility.schemas import FacilityIn
 from src.app.report.model import Report
 from src.app.ticket.model import Ticket
 from src.app.waste.model import Waste
@@ -25,13 +25,11 @@ class FacilityService:
     async def get_facilities(self):
         facilities = await Facility.all().prefetch_related("wastes")
         response = []
-
         for facility in facilities:
             wastes = []
             for waste in facility.wastes.related_objects:
                 wastes.append(waste)
             response.append({**facility.__dict__, "wastes": wastes})
-
         return response
 
     async def get_facility_info(self, facility_id: str):

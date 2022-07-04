@@ -1,7 +1,5 @@
 import datetime
-
 from tortoise import models, fields
-
 from src.app.ticket.types import AggregateState, MeasureSystem, WasteDestinationType, TicketStatus
 
 
