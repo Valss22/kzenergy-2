@@ -4,7 +4,7 @@ from src.app.ticket.schemas import TicketIn
 from src.app.ticket.service import TicketService
 
 ticket_router = APIRouter()
-TICKET_ENDPOINT = "/ticket/"
+TICKET_ENDPOINT = "/facility/ticket/"
 
 
 @ticket_router.post(TICKET_ENDPOINT, )
