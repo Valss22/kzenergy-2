@@ -23,13 +23,13 @@ async def get_facilities(
 
 @facility_router.get(
     FACILITY_ENDPOINT + "{facility_id}",
-    response_model=FacilityTicketsOut
+    #response_model=FacilityTicketsOut
 )
-async def get_facility_info(
+async def get_facility_tickets(
     facility_id: str,
     facility_service: FacilityService = Depends()
 ):
-    return await facility_service.get_facility_info(facility_id)
+    return await facility_service.get_facility_tickets(facility_id)
 
 
 @facility_router.delete(FACILITY_ENDPOINT + "{facility_id}")

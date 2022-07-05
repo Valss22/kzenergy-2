@@ -32,7 +32,7 @@ class FacilityService:
             response.append({**facility.__dict__, "wastes": wastes})
         return response
 
-    async def get_facility_info(self, facility_id: str):
+    async def get_facility_tickets(self, facility_id: str):
         tickets = await Ticket.filter(
             facility__id=facility_id,
             archived=False

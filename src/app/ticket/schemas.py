@@ -1,6 +1,8 @@
 from typing import Optional
 from uuid import UUID
 from datetime import datetime
+
+from pydantic import Field
 from pydantic.main import BaseModel
 
 from src.app.settings import to_camel
@@ -15,7 +17,7 @@ class TicketOut(BaseModel):
     measure_system: MeasureSystem
     quantity: float
     status: TicketStatus
-    excel_url: Optional[str]
+    excel_url: Optional[str] = Field(alias="excel")
     message: Optional[str]
 
     class Config:
