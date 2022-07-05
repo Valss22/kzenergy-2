@@ -15,5 +15,5 @@ class Ticket(models.Model):
     archived = fields.BooleanField(default=False)
     status = fields.CharEnumField(TicketStatus, default=TicketStatus.PENDING.value)
     report = fields.ForeignKeyField("models.Report", related_name="tickets", null=True)
-    excelUrl = fields.CharField(max_length=150)
+    excelUrl = fields.CharField(max_length=150, null=True)
     message = fields.CharField(max_length=200, null=True)
