@@ -49,6 +49,7 @@ class FacilityService:
             }
         except DoesNotExist:
             report = None
+
         return FacilityTicketsOut(
             report=report,
             tickets=tickets

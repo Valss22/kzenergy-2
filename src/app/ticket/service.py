@@ -7,7 +7,7 @@ from src.app.user.service import get_current_user
 class TicketService:
     async def create_ticket(self, ticket: TicketIn, auth_header: str):
         ticket_dict = ticket.dict()
-        facility = Facility.get(id=ticket_dict["facilityId"])
+        facility = await Facility.get(id=ticket_dict["facilityId"])
         user = await get_current_user(auth_header)
         del ticket_dict["facilityId"]
         await Ticket.create(**ticket_dict, user=user, facility=facility)
