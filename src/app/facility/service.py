@@ -1,4 +1,4 @@
-from tortoise.exceptions import IntegrityError
+from tortoise.exceptions import IntegrityError, DoesNotExist
 
 from src.app.facility.model import Facility
 from src.app.facility.schemas import FacilityIn, FacilityTicketsOut
@@ -37,16 +37,18 @@ class FacilityService:
             facility__id=facility_id,
             archived=False
         )
-        report = await Report.get(  # type: ignore
-            tickets__facility__id=facility_id,
-            archived=False
-        ).prefetch_related("user")
+        try:
+            report = await Report.get(  # type: ignore
+                tickets__facility__id=facility_id,
+                archived=False
+            ).prefetch_related("user")
 
-        report = {
-            **report.__dict__,
-            "user": report.user
-        }
-
+            report = {
+                **report.__dict__,
+                "user": report.user
+            }
+        except DoesNotExist:
+            report = None
         return FacilityTicketsOut(
             report=report,
             tickets=tickets
