@@ -15,6 +15,14 @@ from src.app.user.types import UserRole
 ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
 
+async def get_current_user(auth_header: str) -> User:
+    decoded_token: dict = jwt.decode(
+        auth_header.split(" ")[1],
+        TOKEN_KEY, algorithms='HS256'
+    )
+    return await User.get(id=str(decoded_token['id']))
+
+
 class UserService:
 
     async def check_email(self, email: EmailStr) -> None:
