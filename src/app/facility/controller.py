@@ -23,7 +23,7 @@ async def get_facilities(
 
 @facility_router.get(
     FACILITY_ENDPOINT + "{facility_id}",
-    #response_model=FacilityTicketsOut
+    response_model=FacilityTicketsOut,
 )
 async def get_facility_tickets(
     facility_id: str,

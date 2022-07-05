@@ -1,8 +1,13 @@
 from uuid import UUID
-from datetime import datetime
+from datetime import date
 from pydantic.main import BaseModel
+
+
+class User(BaseModel):
+    fullname: str
 
 
 class ReportOut(BaseModel):
     id: UUID
-    date: datetime
+    date: date
+    user: User

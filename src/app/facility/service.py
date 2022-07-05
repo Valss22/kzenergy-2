@@ -1,7 +1,7 @@
 from tortoise.exceptions import IntegrityError
 
 from src.app.facility.model import Facility
-from src.app.facility.schemas import FacilityIn
+from src.app.facility.schemas import FacilityIn, FacilityTicketsOut
 from src.app.report.model import Report
 from src.app.ticket.model import Ticket
 from src.app.waste.model import Waste
@@ -37,14 +37,20 @@ class FacilityService:
             facility__id=facility_id,
             archived=False
         )
-        report = await Report.get(
+        report = await Report.get(  # type: ignore
             tickets__facility__id=facility_id,
             archived=False
-        )
-        return {
-            "report": report,
-            "tickets": tickets
+        ).prefetch_related("user")
+
+        report = {
+            **report.__dict__,
+            "user": report.user
         }
+
+        return FacilityTicketsOut(
+            report=report,
+            tickets=tickets
+        )
 
     async def delete_facility(self, facility_id: str):
         await Facility.filter(id=facility_id).delete()

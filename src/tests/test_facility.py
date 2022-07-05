@@ -34,28 +34,27 @@ async def test_get_facilities(client: AsyncClient):
 
 async def test_get_facility_tickets(client: AsyncClient):
     # FIXME: Create factories or setup fixtures
-    report = await Report.create()
     facility = await Facility.get()
-    worker = await User.create(
+    user = await User.create(
         fullname="Шокоров Влад",
         email="valss@gmail.com",
         role=UserRole.FACILITY_WORKER.value,
         password_hash="123".encode(),
         phone="777666"
     )
+    report = await Report.create(user=user)
     await Ticket.create(
         facility=facility,
-        waste_destination_type=WasteDestinationType.A.value,
-        aggregate_state=AggregateState.SOLID.value,
-        worker=worker,
-        measure_system=MeasureSystem.ITEM.value,
+        wasteDestinationType=WasteDestinationType.A.value,
+        aggregateState=AggregateState.SOLID.value,
+        user=user,
+        measureSystem=MeasureSystem.ITEM.value,
         quantity=42,
         report=report,
-        excel_url="some_excel_url",
+        excelUrl="some_excel_url",
         message="Сообщение для Талона"
     )
     response = await client.get(
         FACILITY_ENDPOINT + f"{str(facility.id)}"
     )
-    print(response.json())
     assert response.status_code == 200

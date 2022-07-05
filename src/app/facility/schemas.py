@@ -1,7 +1,6 @@
 from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
-
 from src.app.report.schemas import ReportOut
 from src.app.ticket.schemas import TicketOut
 from src.app.waste.schemas import WasteOut
@@ -21,3 +20,4 @@ class FacilityOut(BaseModel):
 class FacilityTicketsOut(BaseModel):
     report: Optional[ReportOut]
     tickets: list[TicketOut]
+
