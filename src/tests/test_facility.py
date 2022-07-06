@@ -75,6 +75,7 @@ async def test_update_ticket(client: AsyncClient):
         "message": "updated"
     }
     ticket = await Ticket.get()
+    ticket_waste_old = ticket.wasteName
     ticket_msg_old = ticket.message
     response = await client.patch(
         TICKET_ENDPOINT + f"{str(ticket.id)}",
@@ -82,5 +83,7 @@ async def test_update_ticket(client: AsyncClient):
     )
     ticket = await Ticket.get()
     ticket_msg_new = ticket.message
+    ticket_waste_new = ticket.wasteName
     assert ticket_msg_new != ticket_msg_old
+    assert ticket_waste_new == ticket_waste_old
     assert response.status_code == 200

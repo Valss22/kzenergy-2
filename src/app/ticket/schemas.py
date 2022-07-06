@@ -3,6 +3,7 @@ from uuid import UUID
 from datetime import date
 
 from pydantic import Field
+from pydantic.fields import Undefined
 from pydantic.main import BaseModel
 from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
 
@@ -20,6 +21,11 @@ class TicketIn(BaseModel):
 class TicketPatchIn(BaseModel):
     status: TicketStatus
     message: Optional[str]
+    wasteName: Optional[str] = Field()
+    wasteDestinationType: Optional[WasteDestinationType]
+    aggregateState: Optional[AggregateState]
+    measureSystem: Optional[MeasureSystem]
+    quantity: Optional[float]
 
 
 class TicketOut(BaseModel):

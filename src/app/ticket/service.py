@@ -12,5 +12,5 @@ class TicketService:
         del ticket_dict["facilityId"]
         await Ticket.create(**ticket_dict, user=user, facility=facility)
 
-    async def update_ticket(self, ticket_id: str, ticket: TicketPatchIn):
-        await Ticket.filter(id=ticket_id).update(**ticket.dict())
+    async def update_ticket(self, ticket_id: str, ticket):
+        await Ticket.filter(id=ticket_id).update(**ticket)

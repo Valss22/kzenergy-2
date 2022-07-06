@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Depends, Header, Body
 
 from src.app.ticket.schemas import TicketIn, TicketPatchIn
 from src.app.ticket.service import TicketService
@@ -19,7 +19,7 @@ async def create_ticket(
 @ticket_router.patch(TICKET_ENDPOINT + "{ticket_id}")
 async def update_ticket(
     ticket_id: str,
-    ticket: TicketPatchIn,
+    ticket=Body(...),
     ticket_service: TicketService = Depends()
 ):
     return await ticket_service.update_ticket(ticket_id, ticket)
