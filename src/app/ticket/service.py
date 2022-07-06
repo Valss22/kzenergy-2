@@ -12,6 +12,7 @@ class TicketService:
         waste = await Waste.get(name=ticket_dict["wasteName"])
         user = await get_current_user(auth_header)
         del ticket_dict["facilityId"]
+        del ticket_dict["wasteName"]
         await Ticket.create(
             **ticket_dict, user=user,
             facility=facility, wasteName=waste.name
