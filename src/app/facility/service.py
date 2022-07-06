@@ -60,13 +60,14 @@ class FacilityService:
         reports_objs = await Report.filter(  # type: ignore
             archived=False
         ).prefetch_related("user")
-
-        reports = [
-            {**report.__dict__, "user": report.user,
-             "facilityName": report.tickets.related_objects[0].facility.name}
-            for report in reports_objs
-        ]
-
+        try:
+            reports = [
+                {**report.__dict__, "user": report.user,
+                 "facilityName": report.tickets.related_objects[0].facility.name}
+                for report in reports_objs
+            ]
+        except IndexError:
+            reports = []
         tickets_objs = await Ticket.filter(
             archived=False
         ).prefetch_related("facility")

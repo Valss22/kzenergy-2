@@ -1,5 +1,5 @@
 from httpx import AsyncClient
-from src.app.facility.controller import FACILITY_ENDPOINT
+from src.app.facility.controller import FACILITY_ENDPOINT, FACILITY_TOTAL_ENDPOINT
 from src.app.facility.model import Facility
 from src.app.report.model import Report
 from src.app.ticket.model import Ticket
@@ -58,4 +58,9 @@ async def test_get_facility_tickets(client: AsyncClient):
     response = await client.get(
         FACILITY_ENDPOINT + f"{str(facility.id)}"
     )
+    assert response.status_code == 200
+
+
+async def test_facility_total(client: AsyncClient):
+    response = await client.get(FACILITY_TOTAL_ENDPOINT)
     assert response.status_code == 200
