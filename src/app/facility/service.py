@@ -56,18 +56,19 @@ class FacilityService:
         )
 
     async def get_facility_total(self):
-
         reports_objs = await Report.filter(  # type: ignore
             archived=False
         ).prefetch_related("user")
         try:
-            reports = [
-                {**report.__dict__, "user": report.user,
-                 "facilityName": report.tickets.related_objects[0].facility.name}
-                for report in reports_objs
-            ]
-        except IndexError:
             reports = []
+            for report in reports_objs:
+                report_tickets = await report.tickets.filter().first()
+                report_facility = await report_tickets.facility
+                facility_name = report_facility.name
+                reports.append({**report.__dict__, "user": report.user, "facilityName": facility_name})
+        except AttributeError:
+            reports = []
+
         tickets_objs = await Ticket.filter(
             archived=False
         ).prefetch_related("facility")
