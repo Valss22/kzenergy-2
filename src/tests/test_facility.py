@@ -2,8 +2,9 @@ from httpx import AsyncClient
 from src.app.facility.controller import FACILITY_ENDPOINT, FACILITY_TOTAL_ENDPOINT
 from src.app.facility.model import Facility
 from src.app.report.model import Report
+from src.app.ticket.controller import TICKET_ENDPOINT
 from src.app.ticket.model import Ticket
-from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem
+from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
 from src.app.user.model import User
 from src.app.user.types import UserRole
 from src.app.waste.model import Waste
@@ -65,4 +66,21 @@ async def test_facility_total(client: AsyncClient):
     response = await client.get(FACILITY_TOTAL_ENDPOINT)
     assert list(response.json()["reports"][0].keys()) == ["id", "date", "user", "facilityName"]
     assert response.json()["reports"][0]["facilityName"] == "КПК"
+    assert response.status_code == 200
+
+
+async def test_update_ticket(client: AsyncClient):
+    req_body = {
+        "status": TicketStatus.REJECTED.value,
+        "message": "updated"
+    }
+    ticket = await Ticket.get()
+    ticket_msg_old = ticket.message
+    response = await client.patch(
+        TICKET_ENDPOINT + f"{str(ticket.id)}",
+        json=req_body
+    )
+    ticket = await Ticket.get()
+    ticket_msg_new = ticket.message
+    assert ticket_msg_new != ticket_msg_old
     assert response.status_code == 200

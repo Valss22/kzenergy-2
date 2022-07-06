@@ -17,6 +17,11 @@ class TicketIn(BaseModel):
     quantity: float
 
 
+class TicketPatchIn(BaseModel):
+    status: TicketStatus
+    message: Optional[str]
+
+
 class TicketOut(BaseModel):
     id: UUID
     date: date
