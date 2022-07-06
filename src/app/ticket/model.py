@@ -6,7 +6,7 @@ from src.app.ticket.types import AggregateState, MeasureSystem, WasteDestination
 class Ticket(models.Model):
     id = fields.UUIDField(pk=True)
     date = fields.DateField(default=datetime.date.today())
-    wasteName = fields.CharField(max_length=50, unique=True)
+    wasteName = fields.CharField(max_length=50)
     facility = fields.ForeignKeyField("models.Facility")
     wasteDestinationType = fields.CharEnumField(WasteDestinationType)
     aggregateState = fields.CharEnumField(AggregateState)
