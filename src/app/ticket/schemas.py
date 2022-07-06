@@ -10,6 +10,7 @@ from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSy
 # FIXME: не дублировать поля в схемах
 class TicketIn(BaseModel):
     facilityId: str
+    wasteName: str
     wasteDestinationType: WasteDestinationType
     aggregateState: AggregateState
     measureSystem: MeasureSystem
@@ -19,6 +20,7 @@ class TicketIn(BaseModel):
 class TicketOut(BaseModel):
     id: UUID
     date: date
+    wasteName: str
     wasteDestinationType: WasteDestinationType
     aggregateState: AggregateState
     measureSystem: MeasureSystem

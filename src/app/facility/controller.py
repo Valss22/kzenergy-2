@@ -4,6 +4,7 @@ from src.app.facility.service import FacilityService
 
 facility_router = APIRouter()
 FACILITY_ENDPOINT = "/facility/"
+FACILITY_COMPLEX = "/facility/complex/"
 
 
 @facility_router.post(FACILITY_ENDPOINT)

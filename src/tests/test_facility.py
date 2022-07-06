@@ -44,6 +44,7 @@ async def test_get_facility_tickets(client: AsyncClient):
     )
     report = await Report.create(user=user)
     await Ticket.create(
+        wasteName="Мусор",
         facility=facility,
         wasteDestinationType=WasteDestinationType.A.value,
         aggregateState=AggregateState.SOLID.value,
