@@ -37,8 +37,8 @@ async def get_facility_tickets(
     FACILITY_TOTAL_ENDPOINT,
     response_model=FacilityTotalOut
 )
-async def get_facility_total():
-    ...
+async def get_facility_total(facility_service: FacilityService = Depends()):
+    return await facility_service.get_facility_total()
 
 
 @facility_router.delete(FACILITY_ENDPOINT + "{facility_id}")

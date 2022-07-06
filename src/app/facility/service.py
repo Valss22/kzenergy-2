@@ -1,7 +1,7 @@
 from tortoise.exceptions import IntegrityError, DoesNotExist
 
 from src.app.facility.model import Facility
-from src.app.facility.schemas import FacilityIn, FacilityTicketsOut
+from src.app.facility.schemas import FacilityIn, FacilityTicketsOut, FacilityTotalOut
 from src.app.report.model import Report
 from src.app.ticket.model import Ticket
 from src.app.waste.model import Waste
@@ -52,6 +52,38 @@ class FacilityService:
 
         return FacilityTicketsOut(
             report=report,
+            tickets=tickets
+        )
+
+    async def get_facility_total(self):
+
+        reports_objs = await Report.filter(  # type: ignore
+            archived=False
+        ).prefetch_related("user")
+
+        reports = [
+            {**report.__dict__, "user": report.user,
+             "facilityName": report.tickets.related_objects[0].facility.name}
+            for report in reports_objs
+        ]
+
+        tickets_objs = await Ticket.filter(
+            archived=False
+        ).prefetch_related("facility")
+
+        tickets: dict[str, list[Ticket]] = {}
+
+        for ticket in tickets_objs:
+            facility_name = ticket.facility.name
+            facility_tickets = await Ticket.filter(
+                facility__name=facility_name,
+                archived=False
+            ).prefetch_related("facility")
+
+            tickets[facility_name] = facility_tickets
+
+        return FacilityTotalOut(
+            reports=reports,
             tickets=tickets
         )
 
