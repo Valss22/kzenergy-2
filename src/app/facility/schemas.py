@@ -21,3 +21,11 @@ class FacilityTicketsOut(BaseModel):
     report: Optional[ReportOut]
     tickets: list[TicketOut]
 
+
+class Report(ReportOut):
+    facilityName: str
+
+
+class FacilityTotalOut(BaseModel):
+    reports: list[Optional[Report]]
+    tickets: dict[str, list[TicketOut]]

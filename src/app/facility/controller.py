@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
-from src.app.facility.schemas import FacilityIn, FacilityOut, FacilityTicketsOut
+from src.app.facility.schemas import FacilityIn, FacilityOut, FacilityTicketsOut, FacilityTotalOut
 from src.app.facility.service import FacilityService
 
 facility_router = APIRouter()
 FACILITY_ENDPOINT = "/facility/"
-FACILITY_COMPLEX = "/facility/complex/"
+FACILITY_TOTAL_ENDPOINT = "/facility/total/"
 
 
 @facility_router.post(FACILITY_ENDPOINT)
@@ -24,14 +24,21 @@ async def get_facilities(
 
 @facility_router.get(
     FACILITY_ENDPOINT + "{facility_id}",
-    response_model=FacilityTicketsOut,
-    response_model_exclude={"facilityId"}
+    response_model=FacilityTicketsOut
 )
 async def get_facility_tickets(
     facility_id: str,
     facility_service: FacilityService = Depends()
 ):
     return await facility_service.get_facility_tickets(facility_id)
+
+
+@facility_router.get(
+    FACILITY_TOTAL_ENDPOINT,
+    response_model=FacilityTotalOut
+)
+async def get_facility_total():
+    ...
 
 
 @facility_router.delete(FACILITY_ENDPOINT + "{facility_id}")
