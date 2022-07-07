@@ -58,7 +58,7 @@ class FacilityService:
     async def get_facility_total(self):
         reports_objs = await Report.filter(  # type: ignore
             archived=False
-        ).prefetch_related("user")
+        ).prefetch_related("user").order_by("-date")
         try:
             reports = []
             for report in reports_objs:
@@ -71,7 +71,7 @@ class FacilityService:
 
         tickets_objs = await Ticket.filter(
             archived=False
-        ).prefetch_related("facility")
+        ).prefetch_related("facility").order_by("-date")
 
         tickets: dict[str, list[Ticket]] = {}
 
