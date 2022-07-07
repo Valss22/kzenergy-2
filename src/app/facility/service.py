@@ -85,8 +85,8 @@ class FacilityService:
             tickets[facility_name] = facility_tickets
 
         return FacilityTotalOut(
-            reports=reports,
-            tickets=tickets
+            reports=sorted(reports),
+            tickets=sorted(tickets)
         )
 
     async def delete_facility(self, facility_id: str):
