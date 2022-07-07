@@ -80,13 +80,13 @@ class FacilityService:
             facility_tickets = await Ticket.filter(
                 facility__name=facility_name,
                 archived=False
-            ).prefetch_related("facility")
+            ).prefetch_related("facility").order_by("-date")
 
             tickets[facility_name] = facility_tickets
 
         return FacilityTotalOut(
-            reports=sorted(reports),
-            tickets=sorted(tickets)
+            reports=reports,
+            tickets=tickets
         )
 
     async def delete_facility(self, facility_id: str):
