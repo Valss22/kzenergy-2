@@ -63,7 +63,7 @@ class FacilityService:
             reports = []
             for report in reports_objs:
                 report_tickets = await report.tickets.all().first()
-                report_facility = report_tickets.facility
+                report_facility = await report_tickets.facility
                 facility_name = report_facility.name
                 reports.append({**report.__dict__, "user": report.user, "facilityName": facility_name})
         except AttributeError:
