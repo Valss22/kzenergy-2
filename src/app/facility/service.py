@@ -41,8 +41,8 @@ class FacilityService:
             report = await Report.filter(  # type: ignore
                 tickets__facility_id=facility_id,
                 archived=False
-            ).prefetch_related("user")
-            report = report[0]
+            ).prefetch_related("user").first()
+            # report = report[0]
 
             report = {
                 **report.__dict__,
