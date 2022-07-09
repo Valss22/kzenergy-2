@@ -59,15 +59,15 @@ class FacilityService:
         reports_objs = await Report.filter(  # type: ignore
             archived=False
         ).prefetch_related("user").order_by("-date")
-        #try:
-        reports = []
-        for report in reports_objs:
-            report_tickets = await report.tickets.filter().first()
-            report_facility = await report_tickets.facility
-            facility_name = report_facility.name
-            reports.append({**report.__dict__, "user": report.user, "facilityName": facility_name})
-        # except AttributeError:
-        #     reports = []
+        try:
+            reports = []
+            for report in reports_objs:
+                report_tickets = await report.tickets.all().first()
+                report_facility = report_tickets.facility
+                facility_name = report_facility.name
+                reports.append({**report.__dict__, "user": report.user, "facilityName": facility_name})
+        except AttributeError:
+            reports = []
 
         tickets_objs = await Ticket.filter(
             archived=False
