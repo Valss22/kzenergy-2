@@ -38,10 +38,12 @@ class FacilityService:
             archived=False
         )
         try:
-            report = await Report.get(  # type: ignore
+            report = await Report.filter(  # type: ignore
                 tickets__facility_id=facility_id,
                 archived=False
             ).prefetch_related("user")
+            report = report[0]
+
             report = {
                 **report.__dict__,
                 "user": report.user
