@@ -31,7 +31,7 @@ class UserService:
                 status_code=400,
                 detail="This email already exists",
             )
-
+ 
     def check_admin(self, role: UserRole, email: EmailStr) -> None:
         if role == UserRole.ADMIN and email != ADMIN_EMAIL:
             raise HTTPException(

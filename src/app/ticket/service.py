@@ -1,6 +1,6 @@
 from src.app.facility.model import Facility
 from src.app.ticket.model import Ticket
-from src.app.ticket.schemas import TicketIn, TicketPatchIn
+from src.app.ticket.schemas import TicketIn
 from src.app.user.service import get_current_user
 
 
