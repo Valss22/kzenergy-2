@@ -47,7 +47,7 @@ class FacilityService:
                 **report.__dict__,
                 "user": report.user
             }
-        except DoesNotExist:
+        except:
             report = None
 
         return FacilityTicketsOut(
