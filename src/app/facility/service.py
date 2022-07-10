@@ -1,4 +1,4 @@
-from tortoise.exceptions import IntegrityError, DoesNotExist
+from tortoise.exceptions import IntegrityError
 
 from src.app.facility.model import Facility
 from src.app.facility.schemas import FacilityIn, FacilityTicketsOut, FacilityTotalOut
@@ -65,7 +65,9 @@ class FacilityService:
                 report_tickets = await report.tickets.all().first()
                 report_facility = await report_tickets.facility
                 facility_name = report_facility.name
-                reports.append({**report.__dict__, "user": report.user, "facilityName": facility_name})
+                reports.append({
+                    **report.__dict__, "user": report.user,
+                    "facilityName": facility_name})
         except AttributeError:
             reports = []
 

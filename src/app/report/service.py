@@ -1,5 +1,6 @@
 from src.app.report.model import Report
 from src.app.ticket.model import Ticket
+from src.app.ticket.types import TicketStatus
 from src.app.user.service import get_current_user
 
 
@@ -10,5 +11,6 @@ class ReportService:
         report = await Report.create(user=user)
         await Ticket.filter(
             facility_id=facility_id,
-            archived=False
+            archived=False,
+            status=TicketStatus.ACCEPTED.value
         ).update(report=report)
