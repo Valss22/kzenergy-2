@@ -1,3 +1,5 @@
+from typing import Any
+
 from tortoise.exceptions import IntegrityError
 
 from src.app.facility.model import Facility
@@ -42,10 +44,11 @@ class FacilityService:
                 tickets__facility_id=facility_id,
                 archived=False
             ).prefetch_related("user").first()
-
-            report = {
+            report_tickets = await Ticket.filter(report_id=report.id)
+            report = {  # type: ignore
                 **report.__dict__,
-                "user": report.user
+                "user": report.user,  # type: ignore
+                "tickets": report_tickets
             }
         except:
             report = None
@@ -65,9 +68,14 @@ class FacilityService:
                 report_tickets = await report.tickets.all().first()
                 report_facility = await report_tickets.facility
                 facility_name = report_facility.name
+
+                report_tickets = await Ticket.filter(report_id=report.id)
+
                 reports.append({
                     **report.__dict__, "user": report.user,
+                    "tickets": report_tickets,
                     "facilityName": facility_name})
+
         except AttributeError:
             reports = []
 

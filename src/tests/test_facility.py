@@ -64,7 +64,7 @@ async def test_get_facility_tickets(client: AsyncClient):
 
 async def test_facility_total(client: AsyncClient):
     response = await client.get(FACILITY_TOTAL_ENDPOINT)
-    assert list(response.json()["reports"][0].keys()) == ["id", "date", "user", "facilityName"]
+    assert list(response.json()["reports"][0].keys()) == ["id", "date", "user", "tickets", "facilityName"]
     assert response.json()["reports"][0]["facilityName"] == "КПК"
     assert response.status_code == 200
 
