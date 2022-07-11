@@ -1,7 +1,4 @@
-from typing import Any
-
 from tortoise.exceptions import IntegrityError
-
 from src.app.facility.model import Facility
 from src.app.facility.schemas import FacilityIn, FacilityTicketsOut, FacilityTotalOut
 from src.app.report.model import Report
@@ -81,7 +78,7 @@ class FacilityService:
 
         tickets_objs = await Ticket.filter(
             archived=False
-        ).prefetch_related("facility").order_by("-date")
+        ).prefetch_related("facility").order_by("id")
 
         tickets: dict[str, list[Ticket]] = {}
 
@@ -90,7 +87,7 @@ class FacilityService:
             facility_tickets = await Ticket.filter(
                 facility__name=facility_name,
                 archived=False
-            ).prefetch_related("facility").order_by("-date")
+            ).prefetch_related("facility").order_by("id")
 
             tickets[facility_name] = facility_tickets
 
