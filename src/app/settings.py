@@ -13,6 +13,7 @@ APP_MODELS = [
     "src.app.waste.model",
     "src.app.ticket.model",
     "src.app.report.model",
+    "src.app.summary_report.model",
 ]
 DB_URL = f'postgres:'
 f'//{os.getenv("USER")}:'

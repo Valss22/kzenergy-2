@@ -91,9 +91,12 @@ class FacilityService:
 
             tickets[facility_name] = facility_tickets
 
+        facility_number = await Facility.all().count()
+
         return FacilityTotalOut(
             reports=reports,
-            tickets=tickets
+            tickets=tickets,
+            facilityNumber=facility_number
         )
 
     async def delete_facility(self, facility_id: str):

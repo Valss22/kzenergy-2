@@ -2,6 +2,7 @@ from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel
 from src.app.report.schemas import ReportOut
+from src.app.settings import to_camel
 from src.app.ticket.schemas import TicketOut
 from src.app.waste.schemas import WasteOut
 
@@ -29,3 +30,7 @@ class Report(ReportOut):
 class FacilityTotalOut(BaseModel):
     reports: list[Optional[Report]]
     tickets: dict[str, list[TicketOut]]
+    facility_number: int
+
+    class Config:
+        alias_generator = to_camel
