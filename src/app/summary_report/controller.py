@@ -3,7 +3,7 @@ from fastapi import APIRouter, Header, Depends
 from src.app.summary_report.service import SummaryReportService
 
 summary_report_router = APIRouter()
-SUMMARY_REPORT_ENDPOINT = "/summary/"
+SUMMARY_REPORT_ENDPOINT = "/facility/summary/"
 
 
 @summary_report_router.post(SUMMARY_REPORT_ENDPOINT)
