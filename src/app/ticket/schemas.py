@@ -37,3 +37,4 @@ class TicketOut(BaseModel):
     status: TicketStatus
     excelUrl: Optional[str] = Field(alias="excel")
     message: Optional[str]
+    usedInReport: bool

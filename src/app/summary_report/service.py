@@ -17,3 +17,13 @@ class SummaryReportService:
         await Ticket.filter(
             archived=False, status=TicketStatus.ACCEPTED.value
         ).update(archived=True)
+
+    async def get_sum_report(self):
+        response = []
+        sum_reports = await SummaryReport.all()
+        for sum_report in sum_reports:
+            tickets = await Ticket.filter(report__summaryReport_id=sum_report.id)
+            for ticket in tickets:
+                destination_type = ticket.wasteDestinationType.value
+                measure_system = ticket.measureSystem.value
+                quantity_by_measure_system = {measure_system: ticket.quantity}

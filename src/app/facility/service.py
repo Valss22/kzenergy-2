@@ -36,12 +36,15 @@ class FacilityService:
             facility__id=facility_id,
             archived=False
         )
+        for ticket in tickets:
+            ticket.usedInReport = bool(ticket.report)  # type: ignore
+            await ticket.save(update_fields=["usedInReport"])
         try:
             report = await Report.filter(  # type: ignore
                 tickets__facility_id=facility_id,
                 archived=False
             ).prefetch_related("user").first()
-            report_tickets = await Ticket.filter(report_id=report.id)
+            report_tickets = await Ticket.filter(report_id=report.id)  # type: ignore
             report = {  # type: ignore
                 **report.__dict__,
                 "user": report.user,  # type: ignore
@@ -79,6 +82,10 @@ class FacilityService:
         tickets_objs = await Ticket.filter(
             archived=False
         ).prefetch_related("facility").order_by("id")
+
+        for ticket_obj in tickets_objs:
+            ticket_obj.usedInReport = bool(ticket_obj.report)
+            await ticket_obj.save(update_fields=["usedInReport"])
 
         tickets: dict[str, list[Ticket]] = {}
 
