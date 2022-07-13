@@ -28,7 +28,7 @@ class Report(ReportOut):
 
 
 class FacilityTotalOut(BaseModel):
-    reports: list[Optional[Report]]
+    reports: list[Report]
     tickets: dict[str, list[TicketOut]]
     facility_number: int
 

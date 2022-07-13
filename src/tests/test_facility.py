@@ -2,9 +2,12 @@ from httpx import AsyncClient
 from src.app.facility.controller import FACILITY_ENDPOINT, FACILITY_TOTAL_ENDPOINT
 from src.app.facility.model import Facility
 from src.app.report.model import Report
+from src.app.summary_report.controller import SUMMARY_REPORT_ENDPOINT
+from src.app.summary_report.model import SummaryReport
 from src.app.ticket.controller import TICKET_ENDPOINT
 from src.app.ticket.model import Ticket
 from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
+from src.app.user.controller import REGISTER_ENDPOINT
 from src.app.user.model import User
 from src.app.user.types import UserRole
 from src.app.waste.model import Waste
@@ -87,4 +90,32 @@ async def test_update_ticket(client: AsyncClient):
     ticket_waste_new = ticket.wasteName
     assert ticket_msg_new != ticket_msg_old
     assert ticket_waste_new == ticket_waste_old
+    assert response.status_code == 200
+
+
+async def test_create_sum_report(client: AsyncClient):
+    user_response = await client.post(
+        REGISTER_ENDPOINT,
+        json={
+            "email": "test22@gmail.com",
+            "password": "123",
+            "fullname": "Shok Vlad",
+            "role": UserRole.ECOLOGIS.value,
+            "phone": "87775556774"
+        }
+    )
+    auth_header = "baerer " + user_response.json()["token"]
+    assert await SummaryReport.all().count() == 0
+    response = await client.post(
+        SUMMARY_REPORT_ENDPOINT,
+        headers={"Authorization": auth_header}
+    )
+    assert await SummaryReport.all().count() == 1
+    assert response.status_code == 200
+
+
+async def test_get_sum_report(client: AsyncClient):
+    response = await client.get(
+        SUMMARY_REPORT_ENDPOINT
+    )
     assert response.status_code == 200

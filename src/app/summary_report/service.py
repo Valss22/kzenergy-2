@@ -25,8 +25,6 @@ total_in_sum_report = {**QUANTITY_BY_MEASURE, **QUANTITY_BY_DESTINATION}
 
 
 class SummaryReportService:
-    async def get_facilities_with_reports(self) -> dict[str, list]:
-        pass
 
     async def create_sum_report(self, auth_header: str):
         user = await get_current_user(auth_header)
@@ -39,11 +37,11 @@ class SummaryReportService:
 
     async def get_sum_report(self) -> list[SummaryReportOut]:
         response: list[SummaryReportOut] = []
-        sum_reports = await SummaryReport.all()
+        sum_reports = await SummaryReport.all().prefetch_related("user")
         tickets_response: list[dict] = []
 
         for sum_report in sum_reports:
-            tickets = await Ticket.filter(report__summaryReport_id=sum_report.id)
+            tickets = await Ticket.filter(report__summaryReport_id=sum_report.id).prefetch_related("facility")
             for ticket in tickets:
                 quantity = ticket.quantity
                 ticket_response = {}
@@ -52,16 +50,18 @@ class SummaryReportService:
                 quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
                 quantity_by_destionation_type = {**QUANTITY_BY_DESTINATION, destination_type: quantity}
                 ticket_response.update({
-                    **ticket, "quantityByMeasureSystem": quantity_by_measure_system,
-                    "quantityByDestinationType": quantity_by_destionation_type
+                    **ticket.__dict__, "quantityByMeasureSystem": quantity_by_measure_system,
+                    "quantityByDestinationType": quantity_by_destionation_type,
+                    "facilityName": ticket.facility.name
                 })
                 tickets_response.append(ticket_response)
                 total_in_sum_report.update({measure_system: quantity, destination_type: quantity})
 
             response.append(SummaryReportOut(
                 **sum_report.__dict__,
+                user=sum_report.user,
                 total=total_in_sum_report,
                 tickets=tickets_response,
             ))
 
-        return response
+            return response

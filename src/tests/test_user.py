@@ -68,3 +68,4 @@ async def test_unsuccessful_login_user(client: AsyncClient, user_setup):
         json=req_body
     )
     assert response.status_code == 400
+
