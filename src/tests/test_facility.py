@@ -116,6 +116,6 @@ async def test_create_sum_report(client: AsyncClient):
 
 async def test_get_sum_report(client: AsyncClient):
     response = await client.get(
-        SUMMARY_REPORT_ENDPOINT
+        "/archive/summary/"
     )
     assert response.status_code == 200
