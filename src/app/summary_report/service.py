@@ -49,8 +49,8 @@ class SummaryReportService:
             for ticket in tickets:
                 quantity = ticket.quantity
                 ticket_response = {}
-                measure_system = ticket.measureSystem.value
-                destination_type = ticket.wasteDestinationType.value
+                measure_system = ticket.measureSystem
+                destination_type = ticket.wasteDestinationType
                 quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
                 quantity_by_destionation_type = {**QUANTITY_BY_DESTINATION, destination_type: quantity}
                 ticket_response.update({
