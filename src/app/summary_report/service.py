@@ -1,8 +1,27 @@
+from typing import Final
+
 from src.app.report.model import Report
 from src.app.summary_report.model import SummaryReport
+from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.model import Ticket
-from src.app.ticket.types import TicketStatus
+from src.app.ticket.types import TicketStatus, MeasureSystem, WasteDestinationType
 from src.app.user.service import get_current_user
+
+QUANTITY_BY_MEASURE: Final[dict] = {
+    MeasureSystem.ITEM: 0,
+    MeasureSystem.TON: 0,
+    MeasureSystem.M3: 0,
+}
+
+QUANTITY_BY_DESTINATION: Final[dict] = {
+    WasteDestinationType.A: 0,
+    WasteDestinationType.B: 0,
+    WasteDestinationType.C: 0,
+    WasteDestinationType.D: 0,
+    WasteDestinationType.E: 0,
+}
+
+total_in_sum_report = {**QUANTITY_BY_MEASURE, **QUANTITY_BY_DESTINATION}
 
 
 class SummaryReportService:
@@ -18,12 +37,31 @@ class SummaryReportService:
             archived=False, status=TicketStatus.ACCEPTED.value
         ).update(archived=True)
 
-    async def get_sum_report(self):
-        response = []
+    async def get_sum_report(self) -> list[SummaryReportOut]:
+        response: list[SummaryReportOut] = []
         sum_reports = await SummaryReport.all()
+        tickets_response: list[dict] = []
+
         for sum_report in sum_reports:
             tickets = await Ticket.filter(report__summaryReport_id=sum_report.id)
             for ticket in tickets:
-                destination_type = ticket.wasteDestinationType.value
+                quantity = ticket.quantity
+                ticket_response = {}
                 measure_system = ticket.measureSystem.value
-                quantity_by_measure_system = {measure_system: ticket.quantity}
+                destination_type = ticket.wasteDestinationType.value
+                quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
+                quantity_by_destionation_type = {**QUANTITY_BY_DESTINATION, destination_type: quantity}
+                ticket_response.update({
+                    **ticket, "quantityByMeasureSystem": quantity_by_measure_system,
+                    "quantityByDestinationType": quantity_by_destionation_type
+                })
+                tickets_response.append(ticket_response)
+                total_in_sum_report.update({measure_system: quantity, destination_type: quantity})
+
+            response.append(SummaryReportOut(
+                **sum_report.__dict__,
+                total=total_in_sum_report,
+                tickets=tickets_response,
+            ))
+
+        return response
