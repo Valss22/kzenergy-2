@@ -45,6 +45,7 @@ class SummaryReportService:
             tickets = await Ticket.filter(
                 report__summaryReport_id=sum_report.id
             ).prefetch_related("facility")
+
             for ticket in tickets:
                 quantity = ticket.quantity
                 ticket_response = {}
@@ -58,7 +59,8 @@ class SummaryReportService:
                     "facilityName": ticket.facility.name
                 })
                 tickets_response.append(ticket_response)
-                total_in_sum_report.update({measure_system: quantity, destination_type: quantity})
+                total_in_sum_report[measure_system] += quantity
+                total_in_sum_report[destination_type] += quantity
 
             response.append(SummaryReportOut(
                 **sum_report.__dict__,
