@@ -38,10 +38,11 @@ class SummaryReportService:
         sum_reports = await SummaryReport.all().prefetch_related("user")
         print(sum_reports)
         sum_reports = list(reversed(sum_reports))
-        tickets_response: list[dict] = []
 
         for sum_report in sum_reports:
             total_in_sum_report = {**QUANTITY_BY_MEASURE, **QUANTITY_BY_DESTINATION}
+            tickets_response: list[dict] = []
+
             tickets = await Ticket.filter(
                 report__summaryReport_id=sum_report.id
             ).prefetch_related("facility")
