@@ -5,6 +5,7 @@ from src.app.report.model import Report
 from src.app.summary_report.controller import SUMMARY_REPORT_ENDPOINT
 from src.app.summary_report.model import SummaryReport
 from src.app.ticket.controller import TICKET_ENDPOINT
+from src.app.ticket.excel.service import write_ticket_to_excel
 from src.app.ticket.model import Ticket
 from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
 from src.app.user.controller import REGISTER_ENDPOINT
@@ -114,7 +115,7 @@ async def test_create_sum_report(client: AsyncClient):
     assert response.status_code == 200
 
 
-async def test_get_sum_report(client: AsyncClient):
+async def test_get_sum_reports(client: AsyncClient):
     response = await client.get(
         "/archive/summary/"
     )

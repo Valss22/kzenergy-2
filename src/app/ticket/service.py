@@ -1,4 +1,5 @@
 from src.app.facility.model import Facility
+from src.app.ticket.excel.service import write_ticket_to_excel
 from src.app.ticket.model import Ticket
 from src.app.ticket.schemas import TicketIn
 from src.app.user.service import get_current_user
@@ -14,3 +15,5 @@ class TicketService:
 
     async def update_ticket(self, ticket_id: str, ticket):
         await Ticket.filter(id=ticket_id).update(**ticket)
+        ticket = await Ticket.get(id=ticket_id)
+        await write_ticket_to_excel(ticket)

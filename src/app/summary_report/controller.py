@@ -19,4 +19,4 @@ async def create_sum_report(
 async def get_sum_report(
     summary_report_service: SummaryReportService = Depends()
 ):
-    return await summary_report_service.get_sum_report()
+    return await summary_report_service.get_sum_reports()

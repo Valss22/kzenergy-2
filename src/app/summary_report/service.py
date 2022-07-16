@@ -21,8 +21,6 @@ QUANTITY_BY_DESTINATION: Final[dict] = {
     WasteDestinationType.E: 0,
 }
 
-total_in_sum_report = {**QUANTITY_BY_MEASURE, **QUANTITY_BY_DESTINATION}
-
 
 class SummaryReportService:
 
@@ -35,13 +33,15 @@ class SummaryReportService:
             archived=False, status=TicketStatus.ACCEPTED.value
         ).update(archived=True)
 
-    async def get_sum_report(self) -> list[SummaryReportOut]:
+    async def get_sum_reports(self) -> list[SummaryReportOut]:
         response: list[SummaryReportOut] = []
         sum_reports = await SummaryReport.all().prefetch_related("user")
+        print(sum_reports)
         sum_reports = list(reversed(sum_reports))
         tickets_response: list[dict] = []
 
         for sum_report in sum_reports:
+            total_in_sum_report = {**QUANTITY_BY_MEASURE, **QUANTITY_BY_DESTINATION}
             tickets = await Ticket.filter(
                 report__summaryReport_id=sum_report.id
             ).prefetch_related("facility")
@@ -54,7 +54,8 @@ class SummaryReportService:
                 quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
                 quantity_by_destionation_type = {**QUANTITY_BY_DESTINATION, destination_type: quantity}
                 ticket_response.update({
-                    **ticket.__dict__, "quantityByMeasureSystem": quantity_by_measure_system,
+                    **ticket.__dict__,
+                    "quantityByMeasureSystem": quantity_by_measure_system,
                     "quantityByDestinationType": quantity_by_destionation_type,
                     "facilityName": ticket.facility.name
                 })
@@ -68,4 +69,4 @@ class SummaryReportService:
                 total=total_in_sum_report,
                 tickets=tickets_response,
             ))
-            return response
+        return response
