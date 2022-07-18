@@ -76,7 +76,7 @@ async def test_facility_total(client: AsyncClient):
 
 async def test_update_ticket(client: AsyncClient):
     req_body = {
-        "status": TicketStatus.REJECTED.value,
+        "status": TicketStatus.ACCEPTED.value,
         "message": "updated"
     }
     ticket = await Ticket.get()

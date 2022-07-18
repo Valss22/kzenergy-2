@@ -1,5 +1,7 @@
 # type: ignore
 import subprocess
+
+import cloudinary
 import uvicorn
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
@@ -19,6 +21,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+cloudinary.config(
+    cloud_name="dmh0ekjaw",
+    api_key="963345615946785",
+    api_secret="JqFaq0KIFuk6rx-Z8eJSK-Gfpgc",
+)
+
 app.include_router(api_router)
 
 register_tortoise(
@@ -33,7 +42,6 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
-
 
 if __name__ == "__main__":
     status_output: tuple[int, str] = subprocess.getstatusoutput("mypy .")

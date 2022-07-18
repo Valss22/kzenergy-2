@@ -19,7 +19,7 @@ async def create_ticket(
 @ticket_router.patch(TICKET_ENDPOINT + "{ticket_id}")
 async def update_ticket(
     ticket_id: str,
-    ticket=Body(...),
+    ticket_body=Body(...),
     ticket_service: TicketService = Depends()
 ):
-    return await ticket_service.update_ticket(ticket_id, ticket)
+    return await ticket_service.update_ticket(ticket_id, ticket_body)

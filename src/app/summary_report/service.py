@@ -36,7 +36,6 @@ class SummaryReportService:
     async def get_sum_reports(self) -> list[SummaryReportOut]:
         response: list[SummaryReportOut] = []
         sum_reports = await SummaryReport.all().prefetch_related("user")
-        print(sum_reports)
         sum_reports = list(reversed(sum_reports))
 
         for sum_report in sum_reports:
