@@ -21,7 +21,7 @@ class TicketService:
         try:
             if ticket_body["status"] == TicketStatus.ACCEPTED.value:
                 await write_ticket_to_excel(ticket)
-                excel_url = cloud.upload("ticket.xlsx", resourse_type="auto")["secure_url"]
+                excel_url = cloud.upload("../../../ticket.xlsx", resourse_type="auto")["secure_url"]
                 await Ticket.filter(id=ticket_id).update(excelUrl=excel_url)
         except KeyError:
             pass
