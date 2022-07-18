@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, Header, Body
 
-from src.app.ticket.schemas import TicketIn, TicketPatchIn
+from src.app.ticket.schemas import TicketIn
 from src.app.ticket.service import TicketService
 
 ticket_router = APIRouter()
