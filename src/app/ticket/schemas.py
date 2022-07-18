@@ -35,6 +35,6 @@ class TicketOut(BaseModel):
     measureSystem: MeasureSystem
     quantity: float
     status: TicketStatus
-    excelUrl: Optional[str] = Field(alias="excel")
+    excelUrl: Optional[str]
     message: Optional[str]
     usedInReport: bool
