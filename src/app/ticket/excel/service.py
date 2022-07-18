@@ -19,7 +19,7 @@ COL_OFFSET = 4
 ROW_OFFSET = 3
 # FIXME: название табл и файла
 df = pd.DataFrame()
-writer = pd.ExcelWriter("ticket.xlsx", engine='xlsxwriter')
+writer = pd.ExcelWriter("ticket.xlsx", engine="xlsxwriter")
 df.to_excel(writer, sheet_name="ticket_report", index=False)
 worksheet: Worksheet = writer.sheets['ticket_report']
 workbook = writer.book
