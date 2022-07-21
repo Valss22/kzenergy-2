@@ -23,6 +23,7 @@ class SummaryReportOut(BaseModel):
     id: UUID
     date: date
     user: User
+    excel: str
     total: dict[Union[MeasureSystem, WasteDestinationType], float]
     tickets: list[SummaryReportTicket]
-    excel: str
+
