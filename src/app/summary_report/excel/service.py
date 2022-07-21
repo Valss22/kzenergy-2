@@ -16,33 +16,24 @@ COLNAMES = [
 
 COL_OFFSET = 4
 ROW_OFFSET = 3
-df = pd.DataFrame()
-writer = pd.ExcelWriter("sum_report.xlsx", engine="xlsxwriter")
-df.to_excel(writer, sheet_name="sum_report", index=False)
-worksheet: Worksheet = writer.sheets["sum_report"]
-workbook = writer.book
 
-
-def write_title(date, fullname):
+def write_title(date, fullname, worksheet, workbook):
     title = f"Сводный отчет от {fullname} {date}"
     worksheet.write(1, COL_OFFSET + 4, title, workbook.add_format(TicketStyle.title))
 
 
-def write_col_names():
+def write_col_names(worksheet, workbook):
     for col in range(len(COLNAMES)):
         col_offset = col + COL_OFFSET
         worksheet.write(ROW_OFFSET, col_offset, COLNAMES[col], workbook.add_format(TicketStyle.header))
         if len(COLNAMES[col].split(" ")) > 1:
             col_size = (2 + len(COLNAMES[col])) / 1.5
         else:
-            if COLNAMES[col] == "Дата":
-                col_size = 10
-            else:
-                col_size = 2 + len(COLNAMES[col])
+            col_size = 2 + len(COLNAMES[col])
         worksheet.set_column(col_offset, col_offset, col_size)
 
 
-async def write_values(excel_data: list[Excel]):
+async def write_values(excel_data: list[Excel], worksheet, workbook):
     row_i = ROW_OFFSET + 1
     for excel_row in excel_data:
         wastes = excel_row["facility"]["wastes"]
@@ -80,7 +71,13 @@ async def write_values(excel_data: list[Excel]):
 
 
 async def write_excel_sum_report(excel_data: list[Excel], date, fullname):
-    write_title(date, fullname)
-    write_col_names()
-    await write_values(excel_data)
+    df = pd.DataFrame()
+    writer = pd.ExcelWriter("sum_report.xlsx", engine="xlsxwriter")
+    df.to_excel(writer, sheet_name="sum_report", index=False)
+    worksheet: Worksheet = writer.sheets["sum_report"]
+    workbook = writer.book
+
+    write_title(date, fullname, worksheet, workbook)
+    write_col_names(worksheet, workbook)
+    await write_values(excel_data, worksheet, workbook)
     writer.save()

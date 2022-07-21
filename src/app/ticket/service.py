@@ -17,7 +17,8 @@ class TicketService:
 
     async def update_ticket(self, ticket_id: str, ticket_body):
         await Ticket.filter(id=ticket_id).update(**ticket_body)
-        ticket = await Ticket.filter(id=ticket_id).first()
+        ticket = await Ticket.filter(id=ticket_id)
+        ticket = ticket[0]
         try:
             if ticket_body["status"] == TicketStatus.ACCEPTED.value:
                 await write_ticket_to_excel(ticket)

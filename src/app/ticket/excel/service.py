@@ -17,21 +17,15 @@ COLNAMES = [
 ]
 COL_OFFSET = 4
 ROW_OFFSET = 3
-# FIXME: название табл и файла
-df = pd.DataFrame()
-writer = pd.ExcelWriter("ticket.xlsx", engine="xlsxwriter")
-df.to_excel(writer, sheet_name="ticket_report", index=False)
-worksheet: Worksheet = writer.sheets['ticket_report']
-workbook = writer.book
-
 
 async def get_ticket_data(ticket: Ticket):
     facility = await ticket.facility
     facility_name = facility.name
     user = await ticket.user
     username = user.fullname
+    print(f"get_ticket_data { ticket.__dict__ }")
     return {
-        "Дата вывоза": str(date.today()),
+        "Дата вывоза": str(ticket.date),
         "Наименование отходов": ticket.wasteName,
         "Агрегатное состояние отходов": ticket.aggregateState.value,
         "Метод обращения отходов": ticket.wasteDestinationType.value,
@@ -61,12 +55,12 @@ async def get_max_len_each_col(ticket: Ticket) -> tuple[list[tuple[int, bool]], 
     return max_len_each_col, len_each_val
 
 
-def write_title():
+def write_title(worksheet, workbook):
     title = "Контрольный Талон для передачи отходов на переработку/размещение"
     worksheet.write(1, 6, title, workbook.add_format(TicketStyle.title))
 
 
-async def write_col_names(ticket: Ticket):
+async def write_col_names(ticket: Ticket, worksheet, workbook):
     tuple_len_cols = await get_max_len_each_col(ticket)
     max_len_each_col = tuple_len_cols[0]
     len_each_val = tuple_len_cols[1]
@@ -89,7 +83,7 @@ async def write_col_names(ticket: Ticket):
         worksheet.set_column(col_offset, col_offset, col_size)
 
 
-async def write_values(ticket: Ticket):
+async def write_values(ticket: Ticket, worksheet, workbook):
     ticket_data = await get_ticket_data(ticket)
     col = COL_OFFSET
     for key, value in ticket_data.items():
@@ -98,7 +92,14 @@ async def write_values(ticket: Ticket):
 
 
 async def write_ticket_to_excel(ticket: Ticket):
-    write_title()
-    await write_col_names(ticket)
-    await write_values(ticket)
+    # FIXME: название табл и файла
+    df = pd.DataFrame()
+    writer = pd.ExcelWriter("ticket.xlsx", engine="xlsxwriter")
+    df.to_excel(writer, sheet_name="ticket_report", index=False)
+    worksheet: Worksheet = writer.sheets['ticket_report']
+    workbook = writer.book
+
+    write_title(worksheet, workbook)
+    await write_col_names(ticket, worksheet, workbook)
+    await write_values(ticket, worksheet, workbook)
     writer.save()
