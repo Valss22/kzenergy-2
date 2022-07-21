@@ -5,7 +5,6 @@ from src.app.report.model import Report
 from src.app.summary_report.controller import SUMMARY_REPORT_ENDPOINT
 from src.app.summary_report.model import SummaryReport
 from src.app.ticket.controller import TICKET_ENDPOINT
-from src.app.ticket.excel.service import write_ticket_to_excel
 from src.app.ticket.model import Ticket
 from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
 from src.app.user.controller import REGISTER_ENDPOINT
@@ -19,9 +18,17 @@ async def test_create_facility(client: AsyncClient):
         "name": "КПК",
         "wastes": ["Металлолом", "Строительные отходы"]
     }
+    req_body2 = {
+        "name": "Отдел скваженных операций",
+        "wastes": ["Металлолом"]
+    }
     response = await client.post(
         FACILITY_ENDPOINT,
         json=req_body
+    )
+    await client.post(
+        FACILITY_ENDPOINT,
+        json=req_body2
     )
     assert await Facility.all().count() == 1
     assert await Waste.all().count() == 2
@@ -39,7 +46,8 @@ async def test_get_facilities(client: AsyncClient):
 
 async def test_get_facility_tickets(client: AsyncClient):
     # FIXME: Create factories or setup fixtures
-    facility = await Facility.get()
+    facility = await Facility.get(name="КПК")
+    facility2 = await Facility.get(name="Отдел скваженных операций")
     user = await User.create(
         fullname="Шокоров Влад",
         email="valss@gmail.com",
@@ -51,7 +59,7 @@ async def test_get_facility_tickets(client: AsyncClient):
     await Ticket.create(
         wasteName="Мусор",
         facility=facility,
-        wasteDestinationType=WasteDestinationType.A.value,
+        wasteDestinationType=WasteDestinationType.BURIED.value,
         aggregateState=AggregateState.SOLID.value,
         user=user,
         measureSystem=MeasureSystem.ITEM.value,
@@ -59,6 +67,30 @@ async def test_get_facility_tickets(client: AsyncClient):
         report=report,
         excelUrl="some_excel_url",
         message="Сообщение для Талона"
+    )
+    await Ticket.create(
+        wasteName="Промасленная ветошь",
+        facility=facility,
+        wasteDestinationType=WasteDestinationType.BURIED.value,
+        aggregateState=AggregateState.SOLID.value,
+        user=user,
+        measureSystem=MeasureSystem.ITEM.value,
+        quantity=8,
+        report=report,
+        excelUrl="some_excel_url",
+        message="Сообщение для Талона2"
+    )
+    await Ticket.create(
+        wasteName="Меслори",
+        facility=facility2,
+        wasteDestinationType=WasteDestinationType.BURIED.value,
+        aggregateState=AggregateState.SOLID.value,
+        user=user,
+        measureSystem=MeasureSystem.ITEM.value,
+        quantity=777,
+        report=report,
+        excelUrl="some_excel_url",
+        message="Сообщение для Талона3"
     )
     response = await client.get(
         FACILITY_ENDPOINT + f"{str(facility.id)}"

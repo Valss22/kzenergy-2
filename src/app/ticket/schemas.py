@@ -1,7 +1,6 @@
 from typing import Optional
 from uuid import UUID
 from datetime import date
-from pydantic import Field
 from pydantic.main import BaseModel
 from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
 

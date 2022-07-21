@@ -1,4 +1,4 @@
-class Style:
+class TicketStyle:
     body = {
         "text_wrap": True,
         "valign": 'top',
@@ -12,5 +12,6 @@ class Style:
     }
     title = {
         "bold": True,
-        "font_size": 18,
+        "font_size": 17,
     }
+    extra_body = {**body, "border": 0}

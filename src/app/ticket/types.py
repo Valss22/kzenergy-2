@@ -13,11 +13,11 @@ class MeasureSystem(Enum):
 
 
 class WasteDestinationType(Enum):
-    A = "Захоронение"
-    B = "Утилизация"
-    C = "Переработка"
-    D = "Передача подрядческой организации"
-    E = "Повторное использование"
+    BURIED = "Захоронение"
+    UTILIZIED = "Утилизация"
+    RECYCLED = "Переработка"
+    TRANSMITTED = "Передача подрядческой организации"
+    REUSED = "Повторное использование"
 
 
 class TicketStatus(Enum):
