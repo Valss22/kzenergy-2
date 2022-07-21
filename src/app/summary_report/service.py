@@ -109,5 +109,6 @@ class SummaryReportService:
                 user=sum_report.user,
                 total=total_in_sum_report,
                 tickets=tickets_response,
+                excel=sum_report.excel
             ))
         return response
