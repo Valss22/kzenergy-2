@@ -1,6 +1,6 @@
 from datetime import date
 from typing import Final
-
+import cloudinary.uploader as cloud
 from src.app.facility.model import Facility
 from src.app.report.model import Report
 from src.app.summary_report.excel.service import write_excel_sum_report
@@ -65,7 +65,8 @@ class SummaryReportService:
 
         excel_data = await self.prepare_excel_data(reports)
         await write_excel_sum_report(excel_data, date.today(), user.fullname)
-        summary_report = await SummaryReport.create(user=user, excel="sum_report.xlsx")
+        excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
+        summary_report = await SummaryReport.create(user=user, excel=excel_url)
 
         await Report.filter(archived=False).update(summaryReport=summary_report)
         await Report.filter(summaryReport=summary_report).update(archived=True)
