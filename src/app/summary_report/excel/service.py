@@ -77,9 +77,10 @@ async def write_values(excel_data: list[Excel], worksheet, workbook):
         row_i += 1
 
 
-async def write_excel_sum_report(excel_data: list[SummaryReportOut]):
-    print(excel_data)
-
+async def write_excel_sum_report(sum_report: list[SummaryReportOut]):
+    sum_report = sum_report.__dict__
+    print(sum_report)
+    #username =
     # df = pd.DataFrame()
     # writer = pd.ExcelWriter("sum_report.xlsx", engine="xlsxwriter")
     # df.to_excel(writer, sheet_name="sum_report", index=False)
