@@ -2,8 +2,12 @@ import pandas as pd
 from xlsxwriter.worksheet import Worksheet
 
 from src.app.facility.model import Facility
+from src.app.report.model import Report
 from src.app.summary_report.excel.types import Excel
+from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.excel.styles import TicketStyle
+from src.app.ticket.types import MeasureSystem, WasteDestinationType
+
 
 COLNAMES = [
     "Объект", "Вид отхода",
@@ -14,8 +18,9 @@ COLNAMES = [
     "Повторно использовано", "Комментарий", "Дата"
 ]
 
-COL_OFFSET = 4
+COL_OFFSET = 2
 ROW_OFFSET = 3
+
 
 def write_title(date, fullname, worksheet, workbook):
     title = f"Сводный отчет от {fullname} {date}"
@@ -29,23 +34,25 @@ def write_col_names(worksheet, workbook):
         if len(COLNAMES[col].split(" ")) > 1:
             col_size = (2 + len(COLNAMES[col])) / 1.5
         else:
-            col_size = 2 + len(COLNAMES[col])
+            if COLNAMES[col] == "Дата":
+                col_size = 10
+            else:
+                col_size = 2 + len(COLNAMES[col])
         worksheet.set_column(col_offset, col_offset, col_size)
 
 
 async def write_values(excel_data: list[Excel], worksheet, workbook):
     row_i = ROW_OFFSET + 1
+    print(excel_data)
     for excel_row in excel_data:
         wastes = excel_row["facility"]["wastes"]
-        waste_num = len(wastes)
         row_v = row_i - 1
+        waste_num = len(wastes)
         for waste in wastes:
             row_v += 1
             i = 0
             col_i = COL_OFFSET + 1
             for key, value in waste.items():
-                if col_i > (COL_OFFSET + 1 + len(COLNAMES)):
-                    break
                 if len(str(value)) >= len(COLNAMES[i]):
                     col_size = 1 + len(str(value))
                     worksheet.set_column(col_i, col_i, col_size)
@@ -70,14 +77,16 @@ async def write_values(excel_data: list[Excel], worksheet, workbook):
         row_i += 1
 
 
-async def write_excel_sum_report(excel_data: list[Excel], date, fullname):
-    df = pd.DataFrame()
-    writer = pd.ExcelWriter("sum_report.xlsx", engine="xlsxwriter")
-    df.to_excel(writer, sheet_name="sum_report", index=False)
-    worksheet: Worksheet = writer.sheets["sum_report"]
-    workbook = writer.book
+async def write_excel_sum_report(excel_data: list[SummaryReportOut]):
+    print(excel_data)
 
-    write_title(date, fullname, worksheet, workbook)
-    write_col_names(worksheet, workbook)
-    await write_values(excel_data, worksheet, workbook)
-    writer.save()
+    # df = pd.DataFrame()
+    # writer = pd.ExcelWriter("sum_report.xlsx", engine="xlsxwriter")
+    # df.to_excel(writer, sheet_name="sum_report", index=False)
+    # worksheet: Worksheet = writer.sheets["sum_report"]
+    # workbook = writer.book
+    #
+    # write_title(date, fullname, worksheet, workbook)
+    # write_col_names(worksheet, workbook)
+    # await write_values(excel_data, worksheet, workbook)
+    # writer.save()

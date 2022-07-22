@@ -8,5 +8,5 @@ class SummaryReport(models.Model):
     id = fields.UUIDField(pk=True)
     date = fields.DateField(default=datetime.date.today())
     user = fields.ForeignKeyField("models.User")
-    excel = fields.CharField(max_length=150)
+    excel = fields.CharField(max_length=150, null=True)
     reports: fields.ReverseRelation['Report']

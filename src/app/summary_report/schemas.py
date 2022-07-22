@@ -10,20 +10,20 @@ from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSy
 
 class SummaryReportTicket(BaseModel):
     id: UUID
-    date: date
     facilityName: str
     wasteName: str
     aggregateState: AggregateState
-    message: Optional[str]
     quantityByMeasureSystem: dict[MeasureSystem, float]
     quantityByDestinationType: dict[WasteDestinationType, float]
+    date: date
+    message: Optional[str]
+    date: date
 
 
 class SummaryReportOut(BaseModel):
     id: UUID
     date: date
     user: User
-    excel: str
+    excel: Optional[str]
     total: dict[Union[MeasureSystem, WasteDestinationType], float]
     tickets: list[SummaryReportTicket]
-

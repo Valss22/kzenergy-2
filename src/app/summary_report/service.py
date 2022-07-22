@@ -12,9 +12,9 @@ from src.app.ticket.types import TicketStatus, MeasureSystem, WasteDestinationTy
 from src.app.user.service import get_current_user
 
 QUANTITY_BY_MEASURE: Final[dict] = {
-    MeasureSystem.ITEM: 0,
     MeasureSystem.TON: 0,
     MeasureSystem.M3: 0,
+    MeasureSystem.ITEM: 0,
 }
 
 QUANTITY_BY_DESTINATION: Final[dict] = {
@@ -25,54 +25,54 @@ QUANTITY_BY_DESTINATION: Final[dict] = {
     WasteDestinationType.REUSED: 0,
 }
 
-TOTAL_FIELD: Final[dict] = {
-    MeasureSystem.TON.name: 0,
-    MeasureSystem.M3.name: 0,
-    MeasureSystem.ITEM.name: 0,
-    WasteDestinationType.BURIED.name: 0,
-    WasteDestinationType.UTILIZIED.name: 0,
-    WasteDestinationType.RECYCLED.name: 0,
-    WasteDestinationType.TRANSMITTED.name: 0,
-    WasteDestinationType.REUSED.name: 0,
-}
+# TOTAL_FIELD: Final[dict] = {
+#     MeasureSystem.TON.name: 0,
+#     MeasureSystem.M3.name: 0,
+#     MeasureSystem.ITEM.name: 0,
+#     WasteDestinationType.BURIED.name: 0,
+#     WasteDestinationType.UTILIZIED.name: 0,
+#     WasteDestinationType.RECYCLED.name: 0,
+#     WasteDestinationType.TRANSMITTED.name: 0,
+#     WasteDestinationType.REUSED.name: 0,
+# }
 
 
 class SummaryReportService:
 
-    async def prepare_excel_data(self, reports: list[Report]) -> list[Excel]:
-        excel_data = []
-        wastes = []
-        for fac in await Facility.all():
-            fac_name = fac.name
-            for report in reports:
-                for ticket in await report.tickets.all():
-                    wastes.append({
-                        "name": ticket.wasteName,
-                        "aggregate_state": ticket.aggregateState.value,
-                        **TOTAL_FIELD,
-                        ticket.measureSystem.name: ticket.quantity,
-                        ticket.wasteDestinationType.name: ticket.quantity,
-                        "comment": ticket.message,
-                        "date": str(ticket.date)
-                    })
-            excel_data.append({"facility": {"name": fac_name, "wastes": wastes}})
-        return excel_data
+    # async def prepare_excel_data(self, reports: list[Report]) -> list[Excel]:
+    #     excel_data = []
+    #     for fac in await Facility.all():
+    #         fac_name = fac.name
+    #         wastes = []
+    #         report = await Report.filter(tickets__facility_id=fac.id).first()
+    #         for ticket in await report.tickets.all():
+    #             wastes.append({
+    #                 "name": ticket.wasteName,
+    #                 "aggregate_state": ticket.aggregateState.value,
+    #                 **TOTAL_FIELD,
+    #                 ticket.measureSystem.name: ticket.quantity,
+    #                 ticket.wasteDestinationType.name: ticket.quantity,
+    #                 "comment": ticket.message,
+    #                 "date": str(ticket.date)
+    #             })
+    #         excel_data.append({"facility": {"name": fac_name, "wastes": wastes}})
+    #     return excel_data
 
     async def create_sum_report(self, auth_header: str):
         user = await get_current_user(auth_header)
 
-        reports = await Report.filter(archived=False)
-
-        excel_data = await self.prepare_excel_data(reports)
-        await write_excel_sum_report(excel_data, date.today(), user.fullname)
-        excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
-        summary_report = await SummaryReport.create(user=user, excel=excel_url)
-
+        # excel_data = await self.prepare_excel_data(reports)
+        # await write_excel_sum_report(excel_data, date.today(), user.fullname)
+        # excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
+        summary_report = await SummaryReport.create(user=user)
         await Report.filter(archived=False).update(summaryReport=summary_report)
         await Report.filter(summaryReport=summary_report).update(archived=True)
         await Ticket.filter(
             archived=False, status=TicketStatus.ACCEPTED.value
         ).update(archived=True)
+        await write_excel_sum_report((await self.get_sum_reports()))
+        excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
+        await SummaryReport.filter(user=user).update(excel=excel_url)
 
     async def get_sum_reports(self) -> list[SummaryReportOut]:
         response: list[SummaryReportOut] = []

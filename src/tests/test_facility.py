@@ -66,7 +66,7 @@ async def test_get_facility_tickets(client: AsyncClient):
         quantity=42,
         report=report,
         excelUrl="some_excel_url",
-        message="Сообщение для Талона"
+        message="Сообщение для КПК"
     )
     await Ticket.create(
         wasteName="Промасленная ветошь",
@@ -78,7 +78,7 @@ async def test_get_facility_tickets(client: AsyncClient):
         quantity=8,
         report=report,
         excelUrl="some_excel_url",
-        message="Сообщение для Талона2"
+        message="Сообщение для КПК"
     )
     await Ticket.create(
         wasteName="Меслори",
@@ -90,7 +90,7 @@ async def test_get_facility_tickets(client: AsyncClient):
         quantity=777,
         report=report,
         excelUrl="some_excel_url",
-        message="Сообщение для Талона3"
+        message="Сообщение для Отдел скваженных операций"
     )
     response = await client.get(
         FACILITY_ENDPOINT + f"{str(facility.id)}"
