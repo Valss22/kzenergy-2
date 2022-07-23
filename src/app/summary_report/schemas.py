@@ -15,7 +15,6 @@ class SummaryReportTicket(BaseModel):
     aggregateState: AggregateState
     quantityByMeasureSystem: dict[MeasureSystem, float]
     quantityByDestinationType: dict[WasteDestinationType, float]
-    date: date
     message: Optional[str]
     date: date
 

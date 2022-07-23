@@ -25,17 +25,6 @@ QUANTITY_BY_DESTINATION: Final[dict] = {
     WasteDestinationType.REUSED: 0,
 }
 
-# TOTAL_FIELD: Final[dict] = {
-#     MeasureSystem.TON.name: 0,
-#     MeasureSystem.M3.name: 0,
-#     MeasureSystem.ITEM.name: 0,
-#     WasteDestinationType.BURIED.name: 0,
-#     WasteDestinationType.UTILIZIED.name: 0,
-#     WasteDestinationType.RECYCLED.name: 0,
-#     WasteDestinationType.TRANSMITTED.name: 0,
-#     WasteDestinationType.REUSED.name: 0,
-# }
-
 
 class SummaryReportService:
 
@@ -70,7 +59,8 @@ class SummaryReportService:
         await Ticket.filter(
             archived=False, status=TicketStatus.ACCEPTED.value
         ).update(archived=True)
-        await write_excel_sum_report((await self.get_sum_reports()))
+        sum_reports: list[SummaryReportOut] = await self.get_sum_reports()
+        await write_excel_sum_report(sum_reports[-1])
         excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
         await SummaryReport.filter(user=user).update(excel=excel_url)
 
@@ -85,7 +75,7 @@ class SummaryReportService:
 
             tickets = await Ticket.filter(
                 report__summaryReport_id=sum_report.id
-            ).prefetch_related("facility")
+            ).prefetch_related("facility").order_by("facility_id")
 
             for ticket in tickets:
                 quantity = ticket.quantity

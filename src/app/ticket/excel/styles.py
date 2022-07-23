@@ -14,4 +14,4 @@ class TicketStyle:
         "bold": True,
         "font_size": 17,
     }
-    extra_body = {**body, "border": 0}
+    total = {**header, "bg_color": "#a8d6b0"}
