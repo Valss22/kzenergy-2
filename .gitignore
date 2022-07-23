@@ -4,4 +4,6 @@ venv
 .idea
 __pycache__
 .pytest_cache
+sum_report.xlsx
+ticket.xlsx
 
