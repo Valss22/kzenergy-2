@@ -107,7 +107,7 @@ class UserService:
             password: str = temp_user.password_hash.decode()
             write = permission.write
             read = permission.read
-            permanent.append({
+            temporary.append({
                 **temp_user.__dict__,
                 "password": password,
                 "permission": {"write": write, "read": read}
