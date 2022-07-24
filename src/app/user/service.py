@@ -95,7 +95,7 @@ class UserService:
         permanent = []
         temporary = []
         for permanent_user in permanent_users:
-            permission = await permanent_user.permission.all().first()
+            permission = await Permission.get(user=permanent_user)
             write = permission.write
             read = permission.read
             permanent.append({
@@ -103,7 +103,7 @@ class UserService:
                 "permission": {"write": write, "read": read}
             })
         for temp_user in temp_users:
-            permission = await temp_user.permission.all().first()
+            permission = await Permission.get(user=temp_user)
             password: str = temp_user.password_hash.decode()
             write = permission.write
             read = permission.read
