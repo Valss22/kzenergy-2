@@ -115,7 +115,7 @@ class UserService:
         return UserForAdminOut(permanent=permanent, temporary=temporary)
 
     async def update_user_permission(self, user_id, user_permission: UserPermission):
-        await User.filter(id=user_id).update(**user_permission.dict())
+        await Permission.filter(user_id=user_id).update(**user_permission.__dict__)
 
     async def delete_user(self, user_id):
         await User.filter(id=user_id).delete()
