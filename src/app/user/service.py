@@ -90,8 +90,8 @@ class UserService:
         return self.failed_response()
 
     async def get_users(self):
-        permanent_users = await User.filter(permission_temporary=False)
-        temp_users = await User.filter(permission_temporary=True)
+        permanent_users = await User.filter(permission__temporary=False)
+        temp_users = await User.filter(permission__temporary=True)
         permanent = []
         temporary = []
         for permanent_user in permanent_users:
