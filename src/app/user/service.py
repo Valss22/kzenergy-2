@@ -98,21 +98,19 @@ class UserService:
             permission = await Permission.get(user=permanent_user)
             write = permission.write
             read = permission.read
-            temporary = permission.temporary
+            temporaryValue = permission.temporary
             permanent.append({
                 **permanent_user.__dict__,
-                "temporary": temporary,
-                "permission": {"write": write, "read": read}
+                "permission": {"write": write, "read": read, "temporary": temporaryValue}
             })
         for temp_user in temp_users:
             permission = await Permission.get(user=temp_user)
             write = permission.write
             read = permission.read
-            temporary = permission.temporary
+            temporaryValue = permission.temporary
             temporary.append({
                 **temp_user.__dict__,
-                "temporary": temporary,
-                "permission": {"write": write, "read": read}
+                "permission": {"write": write, "read": read, "temporary": temporaryValue}
             })
         return UserForAdminOut(permanent=permanent, temporary=temporary)
 

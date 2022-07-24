@@ -9,27 +9,22 @@ class UserPermission(BaseModel):
     read: bool
 
 
+class UserPermissionFull(UserPermission):
+    temporary: bool
+
+
 class TempUserIn(UserPermission):
     email: EmailStr
     role: UserRole
-    temporary: bool
 
 
-class PermanentUser(BaseModel):
+class UserOut(BaseModel):
     id: UUID
     email: EmailStr
     role: UserRole
-    permission: UserPermission
-    temporary: bool
-
-
-class TemporaryUser(PermanentUser):
-    id: UUID
-    email: EmailStr
-    role: UserRole
-    permission: UserPermission
+    permission: UserPermissionFull
 
 
 class UserForAdminOut(BaseModel):
-    permanent: list[PermanentUser]
-    temporary: list[TemporaryUser]
+    permanent: list[UserOut]
+    temporary: list[UserOut]
