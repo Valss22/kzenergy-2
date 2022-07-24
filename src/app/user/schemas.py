@@ -27,3 +27,8 @@ class UserOut(BaseModel):
     email: EmailStr
     phone: str
     token: str
+
+
+class UserPermissionPatch(BaseModel):
+    write: bool
+    read: bool

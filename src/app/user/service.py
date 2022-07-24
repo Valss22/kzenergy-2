@@ -10,8 +10,8 @@ from tortoise.exceptions import DoesNotExist
 from src.app.settings import TOKEN_KEY, TOKEN_TIME, SALT
 from src.app.user.model import User
 from src.app.user.permission.model import Permission
-from src.app.user.permission.schemas import UserForAdminOut
-from src.app.user.schemas import UserRegisterIn, UserLoginIn
+from src.app.user.permission.schemas import UserForAdminOut, UserPermission
+from src.app.user.schemas import UserRegisterIn, UserLoginIn, UserPermissionPatch
 from src.app.user.types import UserRole
 
 ADMIN_EMAIL = "deger.begerrr@gmail.com"
@@ -104,12 +104,16 @@ class UserService:
             })
         for temp_user in temp_users:
             permission = await Permission.get(user=temp_user)
-            password: str = temp_user.password_hash.decode()
             write = permission.write
             read = permission.read
             temporary.append({
                 **temp_user.__dict__,
-                "password": password,
                 "permission": {"write": write, "read": read}
             })
         return UserForAdminOut(permanent=permanent, temporary=temporary)
+
+    async def update_user_permission(self, user_id, user_permission: UserPermission):
+        await User.filter(id=user_id).update(**user_permission.dict())
+
+    async def delete_user(self, user_id):
+        await User.filter(id=user_id).delete()
