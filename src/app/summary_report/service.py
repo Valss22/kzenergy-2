@@ -1,10 +1,7 @@
-from datetime import date
 from typing import Final
 import cloudinary.uploader as cloud
-from src.app.facility.model import Facility
 from src.app.report.model import Report
 from src.app.summary_report.excel.service import write_excel_sum_report
-from src.app.summary_report.excel.types import Excel
 from src.app.summary_report.model import SummaryReport
 from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.model import Ticket
@@ -28,31 +25,8 @@ QUANTITY_BY_DESTINATION: Final[dict] = {
 
 class SummaryReportService:
 
-    # async def prepare_excel_data(self, reports: list[Report]) -> list[Excel]:
-    #     excel_data = []
-    #     for fac in await Facility.all():
-    #         fac_name = fac.name
-    #         wastes = []
-    #         report = await Report.filter(tickets__facility_id=fac.id).first()
-    #         for ticket in await report.tickets.all():
-    #             wastes.append({
-    #                 "name": ticket.wasteName,
-    #                 "aggregate_state": ticket.aggregateState.value,
-    #                 **TOTAL_FIELD,
-    #                 ticket.measureSystem.name: ticket.quantity,
-    #                 ticket.wasteDestinationType.name: ticket.quantity,
-    #                 "comment": ticket.message,
-    #                 "date": str(ticket.date)
-    #             })
-    #         excel_data.append({"facility": {"name": fac_name, "wastes": wastes}})
-    #     return excel_data
-
     async def create_sum_report(self, auth_header: str):
         user = await get_current_user(auth_header)
-
-        # excel_data = await self.prepare_excel_data(reports)
-        # await write_excel_sum_report(excel_data, date.today(), user.fullname)
-        # excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
         summary_report = await SummaryReport.create(user=user)
         await Report.filter(archived=False).update(summaryReport=summary_report)
         await Report.filter(summaryReport=summary_report).update(archived=True)

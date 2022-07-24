@@ -14,6 +14,7 @@ APP_MODELS = [
     "src.app.ticket.model",
     "src.app.report.model",
     "src.app.summary_report.model",
+    "src.app.user.permission.model",
 ]
 DB_URL = f'postgres:'
 f'//{os.getenv("USER")}:'

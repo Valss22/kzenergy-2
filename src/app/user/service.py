@@ -9,6 +9,8 @@ from starlette.responses import JSONResponse
 from tortoise.exceptions import DoesNotExist
 from src.app.settings import TOKEN_KEY, TOKEN_TIME, SALT
 from src.app.user.model import User
+from src.app.user.permission.model import Permission
+from src.app.user.permission.schemas import UserForAdminOut
 from src.app.user.schemas import UserRegisterIn, UserLoginIn
 from src.app.user.types import UserRole
 
@@ -31,7 +33,7 @@ class UserService:
                 status_code=400,
                 detail="This email already exists",
             )
- 
+
     def check_admin(self, role: UserRole, email: EmailStr) -> None:
         if role == UserRole.ADMIN and email != ADMIN_EMAIL:
             raise HTTPException(
@@ -69,6 +71,8 @@ class UserService:
         created_user.password_hash = bcrypt.hashpw(password, SALT)
         await created_user.save(update_fields=["password_hash"])
 
+        await Permission.create(user=created_user)
+
         return await self.response_with_token(created_user)
 
     async def auth_user(self, user: UserLoginIn) -> Union[dict, JSONResponse]:
@@ -84,3 +88,28 @@ class UserService:
             return await self.response_with_token(current_user)
 
         return self.failed_response()
+
+    async def get_users(self):
+        permanent_users = await User.filter(permission_temporary=False)
+        temp_users = await User.filter(permission_temporary=True)
+        permanent = []
+        temporary = []
+        for permanent_user in permanent_users:
+            permission = await permanent_user.permission.all().first()
+            write = permission.write
+            read = permission.read
+            permanent.append({
+                **permanent_user.__dict__,
+                "permission": {"write": write, "read": read}
+            })
+        for temp_user in temp_users:
+            permission = await temp_user.permission.all().first()
+            password: str = temp_user.password_hash.decode()
+            write = permission.write
+            read = permission.read
+            permanent.append({
+                **temp_user.__dict__,
+                "password": password,
+                "permission": {"write": write, "read": read}
+            })
+        return UserForAdminOut(permanent=permanent, temporary=temporary)

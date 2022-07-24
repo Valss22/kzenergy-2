@@ -3,7 +3,6 @@ from xlsxwriter.worksheet import Worksheet
 from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.excel.styles import TicketStyle
 
-
 COLNAMES = [
     "Объект", "Вид отхода",
     "Агрегатное состояние", "Кол-во в тоннах",
@@ -98,7 +97,7 @@ async def write_excel_sum_report(sum_report: SummaryReportOut):
     sum_report = sum_report.dict()
     username = sum_report["user"]["fullname"]
     date = str(sum_report["date"])
-    
+
     del sum_report["id"]
     del sum_report["date"]
     del sum_report["user"]

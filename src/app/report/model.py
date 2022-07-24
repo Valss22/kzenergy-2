@@ -14,4 +14,4 @@ class Report(models.Model):
         "models.SummaryReport", null=True,
         default=None, related_name="reports"
     )
-    tickets: fields.ReverseRelation['Ticket']
+    tickets: fields.ReverseRelation["Ticket"]
