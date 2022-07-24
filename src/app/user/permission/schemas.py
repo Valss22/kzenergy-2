@@ -12,6 +12,7 @@ class UserPermission(BaseModel):
 class TempUserIn(UserPermission):
     email: EmailStr
     role: UserRole
+    temporary: bool
 
 
 class PermanentUser(BaseModel):
@@ -19,6 +20,7 @@ class PermanentUser(BaseModel):
     email: EmailStr
     role: UserRole
     permission: UserPermission
+    temporary: bool
 
 
 class TemporaryUser(PermanentUser):
