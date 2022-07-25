@@ -1,12 +1,9 @@
-import secrets
-
 import bcrypt
-
 from src.app.settings import SALT
 from src.app.user.model import User
 from src.app.user.permission.model import Permission
 from src.app.user.permission.schemas import TempUserIn
-from src.app.user.service import UserService
+from src.app.user.service import UserService, get_current_user
 
 
 class TempUserService:
@@ -32,3 +29,7 @@ class TempUserService:
             temporary=True,
             user=created_user
         )
+
+    async def get_user_permission(self, auth_header: str):
+        user = await get_current_user(auth_header)
+        return await Permission.get(user_id=user)

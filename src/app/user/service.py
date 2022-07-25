@@ -41,7 +41,7 @@ class UserService:
                 detail="You dont have rights for this role",
             )
 
-    async def response_with_token(self, user: User) -> dict:
+    def response_with_token(self, user: User) -> dict:
         payload: dict = {
             "id": str(user.id),
             "email": user.email,
@@ -73,7 +73,7 @@ class UserService:
 
         await Permission.create(user=created_user)
 
-        return await self.response_with_token(created_user)
+        return self.response_with_token(created_user)
 
     async def auth_user(self, user: UserLoginIn) -> Union[dict, JSONResponse]:
         email: EmailStr = user.dict()["email"]
@@ -85,33 +85,30 @@ class UserService:
             return self.failed_response()
 
         if bcrypt.checkpw(password, current_user.password_hash):
-            return await self.response_with_token(current_user)
+            return self.response_with_token(current_user)
 
         return self.failed_response()
 
     async def get_users(self):
+        async def get_arr_users(users: list[User]) -> list[dict]:
+            user_arr = []
+            for user in users:
+                permission = await Permission.get(user=user)
+                user_arr.append({
+                    **user.__dict__,
+                    "permission": {
+                        "write": permission.write,
+                        "read": permission.read,
+                        "temporary": permission.temporary
+                    }
+                })
+            return user_arr
+
         permanent_users = await User.filter(permission__temporary=False)
         temp_users = await User.filter(permission__temporary=True)
-        permanent = []
-        temporary = []
-        for permanent_user in permanent_users:
-            permission = await Permission.get(user=permanent_user)
-            write = permission.write
-            read = permission.read
-            temporaryValue = permission.temporary
-            permanent.append({
-                **permanent_user.__dict__,
-                "permission": {"write": write, "read": read, "temporary": temporaryValue}
-            })
-        for temp_user in temp_users:
-            permission = await Permission.get(user=temp_user)
-            write = permission.write
-            read = permission.read
-            temporaryValue = permission.temporary
-            temporary.append({
-                **temp_user.__dict__,
-                "permission": {"write": write, "read": read, "temporary": temporaryValue}
-            })
+        permanent = get_arr_users(permanent_users)
+        temporary = get_arr_users(temp_users)
+
         return UserForAdminOut(permanent=permanent, temporary=temporary)
 
     async def update_user_permission(self, user_id, user_permission: UserPermission):
