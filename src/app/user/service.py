@@ -106,8 +106,8 @@ class UserService:
 
         permanent_users = await User.filter(permission__temporary=False)
         temp_users = await User.filter(permission__temporary=True)
-        permanent = get_arr_users(permanent_users)
-        temporary = get_arr_users(temp_users)
+        permanent = await get_arr_users(permanent_users)
+        temporary = await get_arr_users(temp_users)
 
         return UserForAdminOut(permanent=permanent, temporary=temporary)
 
