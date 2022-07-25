@@ -15,7 +15,7 @@ class TempUserService:
 
     async def create_temp_user(self, temp_user: TempUserIn):
         email = temp_user.dict()["email"]
-        password: bytes = email.split("@")[0].encode()
+        password = email.split("@")[0].encode()
         await self.user_service.check_email(email)
         created_user = await User.create(
             email=email,
