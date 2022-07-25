@@ -32,4 +32,4 @@ class TempUserService:
 
     async def get_user_permission(self, auth_header: str):
         user = await get_current_user(auth_header)
-        return await Permission.get(user_id=user)
+        return await Permission.get(user=user)
