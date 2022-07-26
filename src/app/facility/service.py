@@ -69,7 +69,7 @@ class FacilityService:
                 report_facility = await report_tickets.facility
                 facility_name = report_facility.name
 
-                report_tickets = await Ticket.filter(report_id=report.id)
+                report_tickets = await Ticket.filter(report_id=report.id).order_by("id")
 
                 reports.append({
                     **report.__dict__, "user": report.user,
