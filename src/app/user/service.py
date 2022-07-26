@@ -104,8 +104,8 @@ class UserService:
                 })
             return user_arr
 
-        permanent_users = await User.filter(permission__temporary=False)
-        temp_users = await User.filter(permission__temporary=True)
+        permanent_users = await User.filter(permission__temporary=False).order_by("id")
+        temp_users = await User.filter(permission__temporary=True).order_by("id")
         permanent = await get_arr_users(permanent_users)
         temporary = await get_arr_users(temp_users)
 
