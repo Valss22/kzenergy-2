@@ -20,7 +20,7 @@ ADMIN_EMAIL = "deger.begerrr@gmail.com"
 async def get_current_user(auth_header: str) -> User:
     decoded_token: dict = jwt.decode(
         auth_header.split(" ")[1],
-        TOKEN_KEY, algorithms='HS256'  # type: ignore
+        TOKEN_KEY, algorithms="HS256"  # type: ignore
     )
     return await User.get(id=str(decoded_token['id']))
 
