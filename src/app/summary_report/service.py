@@ -38,7 +38,7 @@ def calc_each_measure_values(dest_type: WasteDestination, measure_system: Measur
         waste_dest_values: list = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
-                       f" + {waste_dest_values[1]} м3 +"
+                       f" + {waste_dest_values[1]} м3. +"
                        f" {waste_dest_values[2]} шт."
         })
     elif measure_system == MeasureSystem.M3:
@@ -46,7 +46,7 @@ def calc_each_measure_values(dest_type: WasteDestination, measure_system: Measur
         waste_dest_values: list = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
-                       f" + {waste_dest_values[1]} м3 +"
+                       f" + {waste_dest_values[1]} м3. +"
                        f" {waste_dest_values[2]} шт."
         })
     else:
@@ -54,7 +54,7 @@ def calc_each_measure_values(dest_type: WasteDestination, measure_system: Measur
         waste_dest_values: list = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
-                       f" + {waste_dest_values[1]} м3 +"
+                       f" + {waste_dest_values[1]} м3. +"
                        f" {waste_dest_values[2]} шт."
         })
 
@@ -105,9 +105,10 @@ class SummaryReportService:
             for key, value in qnt_str_by_dest.items():
                 if type(value) is not int:
                     value = value.replace(".0", "")
-                    value = value.replace("0 т. +", "")
-                    value = value.replace("0 м3 +", "")
-                    value = value.replace("0 шт", "")
+                    if value[0] == "0":
+                        value.replace("0 т. +", "")
+                    value = value.replace(" 0 м3. +", "")
+                    value = value.replace(" 0 шт.", "")
                     qnt_str_by_dest.update({key: value})
             total_in_sum_report.update({**qnt_str_by_dest})
             response.append(SummaryReportOut(
