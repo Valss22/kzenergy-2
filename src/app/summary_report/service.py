@@ -34,7 +34,10 @@ qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {**QNT_BY_DEST}
 
 def calc_each_measure_values(dest_type: WasteDestination, measure_system: MeasureSystem, quantity: float):
     if measure_system == MeasureSystem.TON:
-        qnt_by_dest.update({dest_type: [qnt_by_dest[dest_type][0] + quantity, 0, 0]})
+        qnt_by_dest.update({dest_type: [
+            qnt_by_dest[dest_type][0] + quantity,
+            qnt_by_dest[dest_type][1], qnt_by_dest[dest_type][2]
+        ]})
         waste_dest_values: list = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
@@ -42,7 +45,9 @@ def calc_each_measure_values(dest_type: WasteDestination, measure_system: Measur
                        f" {waste_dest_values[2]} шт."
         })
     elif measure_system == MeasureSystem.M3:
-        qnt_by_dest.update({dest_type: [0, qnt_by_dest[dest_type][1] + quantity, 0]})
+        qnt_by_dest.update({dest_type: [
+            qnt_by_dest[dest_type][0], qnt_by_dest[dest_type][1] + quantity,
+            qnt_by_dest[dest_type][2]]})
         waste_dest_values: list = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
@@ -50,7 +55,11 @@ def calc_each_measure_values(dest_type: WasteDestination, measure_system: Measur
                        f" {waste_dest_values[2]} шт."
         })
     else:
-        qnt_by_dest.update({dest_type: [0, 0, qnt_by_dest[dest_type][2] + quantity]})
+        qnt_by_dest.update({dest_type: [
+            qnt_by_dest[dest_type][0],
+            qnt_by_dest[dest_type][1],
+            qnt_by_dest[dest_type][2] + quantity]
+        })
         waste_dest_values: list = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
@@ -112,7 +121,9 @@ class SummaryReportService:
                     value = value.replace(" 0 м3. +", "")
                     value = value.replace(" + 0 шт.", "")
                     qnt_str_by_dest.update({key: value})
+
             total_in_sum_report.update({**qnt_str_by_dest})
+
             response.append(SummaryReportOut(
                 **sum_report.__dict__,
                 user=sum_report.user,
