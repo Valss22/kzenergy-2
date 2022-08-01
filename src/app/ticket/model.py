@@ -1,7 +1,7 @@
 import datetime
 from tortoise import models, fields
 
-from src.app.ticket.types import AggregateState, MeasureSystem, WasteDestinationType, TicketStatus
+from src.app.ticket.types import AggregateState, MeasureSystem, WasteDestination, TicketStatus
 
 
 class Ticket(models.Model):
@@ -9,7 +9,7 @@ class Ticket(models.Model):
     date = fields.DateField(default=datetime.date.today())
     wasteName = fields.CharField(max_length=50)
     facility = fields.ForeignKeyField("models.Facility")
-    wasteDestinationType = fields.CharEnumField(WasteDestinationType)
+    wasteDestinationType = fields.CharEnumField(WasteDestination)
     aggregateState = fields.CharEnumField(AggregateState)
     user = fields.ForeignKeyField("models.User")
     measureSystem = fields.CharEnumField(MeasureSystem)

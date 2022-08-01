@@ -6,7 +6,7 @@ from src.app.summary_report.controller import SUMMARY_REPORT_ENDPOINT
 from src.app.summary_report.model import SummaryReport
 from src.app.ticket.controller import TICKET_ENDPOINT
 from src.app.ticket.model import Ticket
-from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem, TicketStatus
+from src.app.ticket.types import WasteDestination, AggregateState, MeasureSystem, TicketStatus
 from src.app.user.controller import REGISTER_ENDPOINT
 from src.app.user.model import User
 from src.app.user.types import UserRole
@@ -59,7 +59,7 @@ async def test_get_facility_tickets(client: AsyncClient):
     await Ticket.create(
         wasteName="Мусор",
         facility=facility,
-        wasteDestinationType=WasteDestinationType.BURIED.value,
+        wasteDestinationType=WasteDestination.BURIED.value,
         aggregateState=AggregateState.SOLID.value,
         user=user,
         measureSystem=MeasureSystem.ITEM.value,
@@ -71,7 +71,7 @@ async def test_get_facility_tickets(client: AsyncClient):
     await Ticket.create(
         wasteName="Промасленная ветошь",
         facility=facility,
-        wasteDestinationType=WasteDestinationType.BURIED.value,
+        wasteDestinationType=WasteDestination.BURIED.value,
         aggregateState=AggregateState.SOLID.value,
         user=user,
         measureSystem=MeasureSystem.ITEM.value,
@@ -83,7 +83,7 @@ async def test_get_facility_tickets(client: AsyncClient):
     await Ticket.create(
         wasteName="Меслори",
         facility=facility2,
-        wasteDestinationType=WasteDestinationType.BURIED.value,
+        wasteDestinationType=WasteDestination.BURIED.value,
         aggregateState=AggregateState.SOLID.value,
         user=user,
         measureSystem=MeasureSystem.ITEM.value,

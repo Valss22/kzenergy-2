@@ -1,11 +1,11 @@
-from typing import Optional, Union
+from typing import Optional, Union, Any
 from uuid import UUID
 
 from pydantic.main import BaseModel
 from datetime import date
 
 from src.app.report.schemas import User
-from src.app.ticket.types import WasteDestinationType, AggregateState, MeasureSystem
+from src.app.ticket.types import WasteDestination, AggregateState, MeasureSystem
 
 
 class SummaryReportTicket(BaseModel):
@@ -14,7 +14,7 @@ class SummaryReportTicket(BaseModel):
     wasteName: str
     aggregateState: AggregateState
     quantityByMeasureSystem: dict[MeasureSystem, float]
-    quantityByDestinationType: dict[WasteDestinationType, float]
+    quantityByDestinationType: dict[WasteDestination, Union[float, str]]
     message: Optional[str]
     date: date
 
@@ -24,5 +24,5 @@ class SummaryReportOut(BaseModel):
     date: date
     user: User
     excel: Optional[str]
-    total: dict[Union[MeasureSystem, WasteDestinationType], float]
+    total: dict[Union[MeasureSystem, WasteDestination], Any]
     tickets: list[SummaryReportTicket]

@@ -94,6 +94,7 @@ def sum_rep_to_array(sum_report_tickets: list[dict]) -> list[list]:
 
 
 async def write_excel_sum_report(sum_report: SummaryReportOut):
+    print(sum_report.dict()["total"])
     sum_report = sum_report.dict()
     username = sum_report["user"]["fullname"]
     date = str(sum_report["date"])

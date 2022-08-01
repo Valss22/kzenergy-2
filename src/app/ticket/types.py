@@ -12,7 +12,7 @@ class MeasureSystem(Enum):
     ITEM = "штука"
 
 
-class WasteDestinationType(Enum):
+class WasteDestination(Enum):
     BURIED = "Захоронение"
     UTILIZIED = "Утилизация"
     RECYCLED = "Переработка"

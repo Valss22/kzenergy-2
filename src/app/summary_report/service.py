@@ -1,11 +1,11 @@
-from typing import Final
+from typing import Final, Union
 import cloudinary.uploader as cloud
 from src.app.report.model import Report
 from src.app.summary_report.excel.service import write_excel_sum_report
 from src.app.summary_report.model import SummaryReport
 from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.model import Ticket
-from src.app.ticket.types import TicketStatus, MeasureSystem, WasteDestinationType
+from src.app.ticket.types import TicketStatus, MeasureSystem, WasteDestination
 from src.app.user.service import get_current_user
 
 QUANTITY_BY_MEASURE: Final[dict] = {
@@ -13,14 +13,56 @@ QUANTITY_BY_MEASURE: Final[dict] = {
     MeasureSystem.M3: 0,
     MeasureSystem.ITEM: 0,
 }
-
-QUANTITY_BY_DESTINATION: Final[dict] = {
-    WasteDestinationType.BURIED: 0,
-    WasteDestinationType.UTILIZIED: 0,
-    WasteDestinationType.RECYCLED: 0,
-    WasteDestinationType.TRANSMITTED: 0,
-    WasteDestinationType.REUSED: 0,
+QNT_BY_DEST: dict[WasteDestination, float] = {
+    WasteDestination.BURIED: 0,
+    WasteDestination.UTILIZIED: 0,
+    WasteDestination.RECYCLED: 0,
+    WasteDestination.TRANSMITTED: 0,
+    WasteDestination.REUSED: 0,
 }
+
+qnt_by_dest: dict[WasteDestination, Union[list, str]] = {
+    WasteDestination.BURIED: [0, 0, 0],
+    WasteDestination.UTILIZIED: [0, 0, 0],
+    WasteDestination.RECYCLED: [0, 0, 0],
+    WasteDestination.TRANSMITTED: [0, 0, 0],
+    WasteDestination.REUSED: [0, 0, 0],
+}
+
+qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {
+    WasteDestination.BURIED: "0 т. + 0 м3 + 0 шт.",
+    WasteDestination.UTILIZIED: "0 т. + 0 м3 + 0 шт.",
+    WasteDestination.RECYCLED: "0 т. + 0 м3 + 0 шт.",
+    WasteDestination.TRANSMITTED: "0 т. + 0 м3 + 0 шт.",
+    WasteDestination.REUSED: "0 т. + 0 м3 + 0 шт.",
+}
+
+
+def calc_each_measure_values(dest_type: WasteDestination, measure_system: MeasureSystem, quantity: float):
+    if measure_system == MeasureSystem.TON:
+        qnt_by_dest.update({dest_type: [qnt_by_dest[dest_type][0] + quantity, 0, 0]})
+        waste_dest_values: list = qnt_by_dest[dest_type]
+        qnt_str_by_dest.update({
+            dest_type: f"{waste_dest_values[0]} т."
+                       f" + {waste_dest_values[1]} м3 +"
+                       f" {waste_dest_values[2]} шт."
+        })
+    elif measure_system == MeasureSystem.M3:
+        qnt_by_dest.update({dest_type: [0, qnt_by_dest[dest_type][1] + quantity, 0]})
+        waste_dest_values: list = qnt_by_dest[dest_type]
+        qnt_str_by_dest.update({
+            dest_type: f"{waste_dest_values[0]} т."
+                       f" + {waste_dest_values[1]} м3 +"
+                       f" {waste_dest_values[2]} шт."
+        })
+    else:
+        qnt_by_dest.update({dest_type: [0, 0, qnt_by_dest[dest_type][2] + quantity]})
+        waste_dest_values: list = qnt_by_dest[dest_type]
+        qnt_str_by_dest.update({
+            dest_type: f"{waste_dest_values[0]} т."
+                       f" + {waste_dest_values[1]} м3 +"
+                       f" {waste_dest_values[2]} шт."
+        })
 
 
 class SummaryReportService:
@@ -44,7 +86,7 @@ class SummaryReportService:
         sum_reports = list(reversed(sum_reports))
 
         for sum_report in sum_reports:
-            total_in_sum_report = {**QUANTITY_BY_MEASURE, **QUANTITY_BY_DESTINATION}
+            total_in_sum_report = {**QUANTITY_BY_MEASURE}
             tickets_response: list[dict] = []
 
             tickets = await Ticket.filter(
@@ -57,17 +99,17 @@ class SummaryReportService:
                 measure_system = ticket.measureSystem
                 destination_type = ticket.wasteDestinationType
                 quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
-                quantity_by_destionation_type = {**QUANTITY_BY_DESTINATION, destination_type: quantity}
+                calc_each_measure_values(destination_type, measure_system, quantity)
                 ticket_response.update({
                     **ticket.__dict__,
                     "quantityByMeasureSystem": quantity_by_measure_system,
-                    "quantityByDestinationType": quantity_by_destionation_type,
+                    "quantityByDestinationType": {**QNT_BY_DEST, destination_type: quantity},
                     "facilityName": ticket.facility.name
                 })
                 tickets_response.append(ticket_response)
                 total_in_sum_report[measure_system] += quantity
-                total_in_sum_report[destination_type] += quantity
 
+            total_in_sum_report.update({**qnt_str_by_dest})
             response.append(SummaryReportOut(
                 **sum_report.__dict__,
                 user=sum_report.user,
