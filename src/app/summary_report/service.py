@@ -107,6 +107,8 @@ class SummaryReportService:
                     value = value.replace(".0", "")
                     if value[0] == "0":
                         value = value.replace("0 т. +", "")
+                    else:
+                        value = value.replace(" + 0 м3.", "")
                     value = value.replace(" 0 м3. +", "")
                     value = value.replace(" 0 шт.", "")
                     qnt_str_by_dest.update({key: value})
