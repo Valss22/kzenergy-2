@@ -21,18 +21,8 @@ QNT_BY_DEST: dict[WasteDestination, float] = {
     WasteDestination.REUSED: 0,
 }
 
-qnt_by_dest: dict[WasteDestination, Union[list, str]] = {
-    WasteDestination.BURIED: [0, 0, 0],
-    WasteDestination.UTILIZIED: [0, 0, 0],
-    WasteDestination.RECYCLED: [0, 0, 0],
-    WasteDestination.TRANSMITTED: [0, 0, 0],
-    WasteDestination.REUSED: [0, 0, 0],
-}
 
-qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {**QNT_BY_DEST}
-
-
-def calc_each_measure_values(dest_type: WasteDestination, measure_system: MeasureSystem, quantity: float):
+def calc_each_measure_values(qnt_by_dest, qnt_str_by_dest,  dest_type: WasteDestination, measure_system: MeasureSystem, quantity: float):
     if measure_system == MeasureSystem.TON:
         qnt_by_dest.update({dest_type: [
             qnt_by_dest[dest_type][0] + quantity,
@@ -84,6 +74,16 @@ class SummaryReportService:
         await SummaryReport.filter(user=user).update(excel=excel_url)
 
     async def get_sum_reports(self) -> list[SummaryReportOut]:
+        qnt_by_dest: dict[WasteDestination, Union[list, str]] = {
+            WasteDestination.BURIED: [0, 0, 0],
+            WasteDestination.UTILIZIED: [0, 0, 0],
+            WasteDestination.RECYCLED: [0, 0, 0],
+            WasteDestination.TRANSMITTED: [0, 0, 0],
+            WasteDestination.REUSED: [0, 0, 0],
+        }
+
+        qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {**QNT_BY_DEST}
+
         response: list[SummaryReportOut] = []
         sum_reports = await SummaryReport.all().prefetch_related("user")
         sum_reports = list(reversed(sum_reports))
@@ -102,7 +102,7 @@ class SummaryReportService:
                 measure_system = ticket.measureSystem
                 destination_type = ticket.wasteDestinationType
                 quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
-                calc_each_measure_values(destination_type, measure_system, quantity)
+                calc_each_measure_values(qnt_by_dest, qnt_str_by_dest, destination_type, measure_system, quantity)
                 ticket_response.update({
                     **ticket.__dict__,
                     "quantityByMeasureSystem": quantity_by_measure_system,
