@@ -106,7 +106,7 @@ class SummaryReportService:
                 if type(value) is not int:
                     value = value.replace(".0", "")
                     if value[0] == "0":
-                        value.replace("0 т. +", "")
+                        value = value.replace("0 т. +", "")
                     value = value.replace(" 0 м3. +", "")
                     value = value.replace(" 0 шт.", "")
                     qnt_str_by_dest.update({key: value})
