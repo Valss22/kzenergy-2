@@ -29,13 +29,7 @@ qnt_by_dest: dict[WasteDestination, Union[list, str]] = {
     WasteDestination.REUSED: [0, 0, 0],
 }
 
-qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {
-    WasteDestination.BURIED: "0 т. + 0 м3 + 0 шт.",
-    WasteDestination.UTILIZIED: "0 т. + 0 м3 + 0 шт.",
-    WasteDestination.RECYCLED: "0 т. + 0 м3 + 0 шт.",
-    WasteDestination.TRANSMITTED: "0 т. + 0 м3 + 0 шт.",
-    WasteDestination.REUSED: "0 т. + 0 м3 + 0 шт.",
-}
+qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {**QNT_BY_DEST}
 
 
 def calc_each_measure_values(dest_type: WasteDestination, measure_system: MeasureSystem, quantity: float):
@@ -108,7 +102,13 @@ class SummaryReportService:
                 })
                 tickets_response.append(ticket_response)
                 total_in_sum_report[measure_system] += quantity
-
+            for key, value in qnt_str_by_dest.items():
+                if type(value) is not int:
+                    value = value.replace(".0", "")
+                    value = value.replace("0 т. +", "")
+                    value = value.replace("0 м3 +", "")
+                    value = value.replace("0 шт", "")
+                    qnt_str_by_dest.update({key: value})
             total_in_sum_report.update({**qnt_str_by_dest})
             response.append(SummaryReportOut(
                 **sum_report.__dict__,
