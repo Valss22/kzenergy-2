@@ -108,9 +108,9 @@ class SummaryReportService:
                     if value[0] == "0":
                         value = value.replace("0 т. +", "")
                     else:
-                        value = value.replace(" + 0 м3.", "")
+                        value = value.replace("+ 0 м3.", "")
                     value = value.replace(" 0 м3. +", "")
-                    value = value.replace(" 0 шт.", "")
+                    value = value.replace(" + 0 шт.", "")
                     qnt_str_by_dest.update({key: value})
             total_in_sum_report.update({**qnt_str_by_dest})
             response.append(SummaryReportOut(
