@@ -21,8 +21,8 @@ class ChartService:
                 qnt_by_measure = {**QUANTITY_BY_MEASURE}
                 for ticket in await Ticket.filter(wasteName=waste.name):
                     qnt_by_measure.update({
-                        qnt_by_measure[ticket.measureSystem.value]
-                        : qnt_by_measure[ticket.measureSystem.value] + ticket.quantity
+                        qnt_by_measure[ticket.measureSystem]
+                        : qnt_by_measure[ticket.measureSystem] + ticket.quantity
                     })
                 info.append({**qnt_by_measure, "date": sum_report.date})
                 repsonse.update({waste.name: {"limit": LIMIT[waste.name], "info": info}})
