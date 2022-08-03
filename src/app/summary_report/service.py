@@ -22,7 +22,11 @@ QNT_BY_DEST: dict[WasteDestination, float] = {
 }
 
 
-def calc_each_measure_values(qnt_by_dest, qnt_str_by_dest,  dest_type: WasteDestination, measure_system: MeasureSystem, quantity: float):
+def calc_each_measure_values(
+    qnt_by_dest, qnt_str_by_dest,
+    dest_type: WasteDestination,
+    measure_system: MeasureSystem, quantity: float
+):
     if measure_system == MeasureSystem.TON:
         qnt_by_dest.update({dest_type: [
             qnt_by_dest[dest_type][0] + quantity,
@@ -102,7 +106,10 @@ class SummaryReportService:
                 measure_system = ticket.measureSystem
                 destination_type = ticket.wasteDestinationType
                 quantity_by_measure_system = {**QUANTITY_BY_MEASURE, measure_system: quantity}
-                calc_each_measure_values(qnt_by_dest, qnt_str_by_dest, destination_type, measure_system, quantity)
+                calc_each_measure_values(
+                    qnt_by_dest, qnt_str_by_dest,
+                    destination_type, measure_system, quantity
+                )
                 ticket_response.update({
                     **ticket.__dict__,
                     "quantityByMeasureSystem": quantity_by_measure_system,

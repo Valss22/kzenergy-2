@@ -1,6 +1,5 @@
 import datetime
 from tortoise import models, fields
-
 from src.app.report.model import Report
 
 

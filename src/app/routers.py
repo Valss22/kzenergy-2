@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from src.app.chart.controller import chart_router
 from src.app.facility.controller import facility_router
 from src.app.report.controller import report_router
 from src.app.summary_report.controller import summary_report_router
@@ -16,3 +17,4 @@ api_router.include_router(report_router)
 api_router.include_router(summary_report_router)
 api_router.include_router(temp_user_router)
 api_router.include_router(waste_router)
+api_router.include_router(chart_router)
