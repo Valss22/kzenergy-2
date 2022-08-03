@@ -25,5 +25,5 @@ class ChartService:
                         : qnt_by_measure[ticket.measureSystem.value] + ticket.quantity
                     })
                 info.append({**qnt_by_measure, "date": sum_report.date})
-                repsonse.update({waste.name: info, "limit": LIMIT[waste.name]})
+                repsonse.update({waste.name: {"limit": LIMIT[waste.name], "info": info}})
         return repsonse
