@@ -5,9 +5,9 @@ from src.app.ticket.types import MeasureSystem
 from src.app.waste.model import Waste
 
 QUANTITY_BY_MEASURE = {
-    MeasureSystem.TON.value: 0,
-    MeasureSystem.M3.value: 0,
-    MeasureSystem.ITEM.value: 0,
+    MeasureSystem.TON: 0,
+    MeasureSystem.M3: 0,
+    MeasureSystem.ITEM: 0,
 }
 
 
