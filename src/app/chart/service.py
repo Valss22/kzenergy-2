@@ -18,9 +18,12 @@ class ChartService:
 
         for waste in await Waste.all():
             info: list[dict] = []
-            for sum_report in await SummaryReport.filter(reports__tickets__wasteName=waste.name):
+            for sum_report in await SummaryReport.all():
                 qnt_by_measure = {**QUANTITY_BY_MEASURE}
-                for ticket in await Ticket.filter(wasteName=waste.name):
+                for ticket in await Ticket.filter(
+                    wasteName=waste.name,
+                    ticket__report__summaryReport_id=sum_report.id
+                ):
                     qnt_by_measure.update({
                         ticket.measureSystem: qnt_by_measure[ticket.measureSystem] + ticket.quantity
                     })
