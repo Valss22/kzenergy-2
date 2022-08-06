@@ -12,7 +12,7 @@ class WasteOut(BaseModel):
 
 class UpdateWaste(BaseModel):
     wasteName: str
-    value: float
+    quantity: float
 
 
 class WasteQuantity(BaseModel):

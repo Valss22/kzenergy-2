@@ -24,4 +24,4 @@ class WasteService:
         return wastes
 
     def update_waste_limit(self, waste: UpdateWaste):
-        LIMIT.update({waste.dict()["wasteName"]: waste.dict()["value"]})
+        LIMIT.update({waste.dict()["wasteName"]: waste.dict()["quantity"]})
