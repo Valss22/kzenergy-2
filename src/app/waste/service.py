@@ -1,3 +1,4 @@
+from src.app.chart.static import LIMIT
 from src.app.summary_report.service import QUANTITY_BY_MEASURE
 from src.app.ticket.model import Ticket
 from src.app.ticket.types import TicketStatus
@@ -15,5 +16,8 @@ class WasteService:
                 status=TicketStatus.ACCEPTED.value
             ):
                 quantity.update({ticket.measureSystem: quantity[ticket.measureSystem] + ticket.quantity})
-            wastes.append({"id": waste.id, "name": waste.name, "quantity": quantity})
+            wastes.append({
+                "id": waste.id, "name": waste.name,
+                "limit": LIMIT[waste.name], "quantity": quantity
+            })
         return wastes

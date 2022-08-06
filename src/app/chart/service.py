@@ -15,7 +15,6 @@ class ChartService:
 
     async def get_lineplot(self):
         repsonse = {}
-
         for waste in await Waste.all():
             info: list[dict] = []
             for sum_report in await SummaryReport.all():
