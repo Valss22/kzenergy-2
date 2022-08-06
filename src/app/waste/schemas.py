@@ -10,9 +10,13 @@ class WasteOut(BaseModel):
     name: str
 
 
+class UpdateWaste(BaseModel):
+    wasteName: str
+    value: float
+
+
 class WasteQuantity(BaseModel):
     id: UUID
     name: str
     limit: float
     quantity: dict[MeasureSystem, float]
-
