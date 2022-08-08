@@ -29,3 +29,23 @@ class ChartService:
                 info.append({**qnt_by_measure, "date": sum_report.date})
             repsonse.update({waste.name: {"limit": LIMIT[waste.name], "info": info}})
         return repsonse
+
+    async def get_barplot(self):
+        response: list[dict] = []
+        for waste in await Waste.all():
+            for sum_report in await SummaryReport.all():
+                qnt_by_measure = {**QUANTITY_BY_MEASURE}
+                for ticket in await Ticket.filter(
+                    wasteName=waste.name,
+                    report__summaryReport_id=sum_report.id
+                ):
+                    qnt_by_measure.update({
+                        ticket.measureSystem: qnt_by_measure[ticket.measureSystem] + ticket.quantity
+                    })
+                response.append({
+                    sum_report.date: {
+                        **qnt_by_measure,
+                        "name": waste.name,
+                        "limit": LIMIT[waste.name]}
+                })
+        return response

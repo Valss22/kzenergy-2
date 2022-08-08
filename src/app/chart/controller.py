@@ -9,3 +9,8 @@ chart_router = APIRouter(
 @chart_router.get("/lineplot/")
 async def get_lineplot(chart_service: ChartService = Depends()):
     return await chart_service.get_lineplot()
+
+
+@chart_router.get("/barplot/")
+async def get_barplot(chart_service: ChartService = Depends()):
+    return await chart_service.get_barplot()

@@ -18,3 +18,5 @@ def update_waste_limit(
     waste_service: WasteService = Depends()
 ):
     return waste_service.update_waste_limit(waste)
+
+
