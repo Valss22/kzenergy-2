@@ -31,7 +31,7 @@ class ChartService:
         return repsonse
 
     async def get_barplot(self):
-        response: list[dict] = []
+        response: dict = {}
         for waste in await Waste.all():
             for sum_report in await SummaryReport.all():
                 qnt_by_measure = {**QUANTITY_BY_MEASURE}
@@ -42,7 +42,7 @@ class ChartService:
                     qnt_by_measure.update({
                         ticket.measureSystem: qnt_by_measure[ticket.measureSystem] + ticket.quantity
                     })
-                response.append({
+                response.update({
                     sum_report.date: {
                         **qnt_by_measure,
                         "name": waste.name,
