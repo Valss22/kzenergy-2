@@ -46,4 +46,4 @@ register_tortoise(
 )
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0:$PORT")
+    uvicorn.run(app, host="0.0.0.0", port=os.getenv("PORT"))
