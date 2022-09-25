@@ -11,6 +11,7 @@ from src.app.routers import api_router
 import os
 from src.app.settings import APP_MODELS
 
+
 app = FastAPI()
 origins = ["*"]
 
@@ -30,22 +31,19 @@ cloudinary.config(
 
 app.include_router(api_router)
 
+
 register_tortoise(
     app,
-    db_url=f'postgres:'
-           f'//{os.getenv("USER")}:'
-           f'{os.getenv("PASSWORD")}@'
-           f'{os.getenv("HOST")}/'
-           f'{os.getenv("DATABASE")}',
-    # db_url=os.getenv("DATABASE_URL"),
+    # db_url=f'postgres:'
+    #        f'//{os.getenv("USER")}:'
+    #        f'{os.getenv("PASSWORD")}@'
+    #        f'{os.getenv("HOST")}/'
+    #        f'{os.getenv("DATABASE")}',
+    db_url=os.getenv("DATABASE_URL"),
     modules={"models": APP_MODELS},
     generate_schemas=True,
     add_exception_handlers=True,
 )
 
 if __name__ == "__main__":
-    status_output: tuple[int, str] = subprocess.getstatusoutput("mypy .")
-    if status_output[0]:
-        print(status_output[1])
-    else:
-        uvicorn.run(app, host="127.0.0.1", port=8000)
+    uvicorn.run(app, host="0.0.0.0:$PORT")
