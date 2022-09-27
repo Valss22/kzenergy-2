@@ -1,5 +1,5 @@
 from uuid import UUID
-
+from typing import Dict
 from pydantic import BaseModel
 
 from src.app.ticket.types import MeasureSystem
@@ -19,4 +19,4 @@ class WasteQuantity(BaseModel):
     id: UUID
     name: str
     limit: float
-    quantity: dict[MeasureSystem, float]
+    quantity: Dict[MeasureSystem, float]
