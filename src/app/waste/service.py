@@ -4,12 +4,13 @@ from src.app.ticket.model import Ticket
 from src.app.ticket.types import TicketStatus
 from src.app.waste.model import Waste
 from src.app.waste.schemas import UpdateWaste
+from typing import List
 
 
 class WasteService:
 
     async def get_wastes_quantity(self):
-        wastes: list[dict] = []
+        wastes: List[dict] = []
         for waste in await Waste.all():
             quantity = {**QUANTITY_BY_MEASURE}
             for ticket in await Ticket.filter(

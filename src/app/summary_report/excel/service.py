@@ -2,6 +2,7 @@ import pandas as pd
 from xlsxwriter.worksheet import Worksheet
 from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.excel.styles import TicketStyle
+from typing import List, Dict
 
 COLNAMES = [
     "Объект", "Вид отхода",
@@ -35,7 +36,7 @@ def write_col_names(worksheet, workbook):
         worksheet.set_column(col_offset, col_offset, col_size)
 
 
-async def write_values(sum_rep_arr: list[list[str]], total_arr, worksheet, workbook):
+async def write_values(sum_rep_arr: List[List[str]], total_arr, worksheet, workbook):
     row_i = ROW_OFFSET + 1
 
     for row in sum_rep_arr:
@@ -74,12 +75,12 @@ async def write_values(sum_rep_arr: list[list[str]], total_arr, worksheet, workb
         col_i += 1
 
 
-def sum_rep_to_array(sum_report_tickets: list[dict]) -> list[list]:
+def sum_rep_to_array(sum_report_tickets: List[Dict]) -> List[List]:
     sum_report_arr = []
     for ticket in sum_report_tickets:
         sum_report_arr_ticket = []
         for key, value in ticket.items():
-            if type(value) is dict:
+            if type(value) is Dict:
                 for k, v in value.items():
                     sum_report_arr_ticket.append(v)
             else:

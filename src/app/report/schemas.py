@@ -1,7 +1,7 @@
 from uuid import UUID
 from datetime import date
 from pydantic.main import BaseModel
-
+from typing import List
 from src.app.ticket.types import TicketStatus
 
 
@@ -20,4 +20,4 @@ class ReportOut(BaseModel):
     id: UUID
     date: date
     user: User
-    tickets: list[Ticket]
+    tickets: List[Ticket]

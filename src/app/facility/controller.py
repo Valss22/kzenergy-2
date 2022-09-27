@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from src.app.facility.schemas import FacilityIn, FacilityOut, FacilityTicketsOut, FacilityTotalOut
 from src.app.facility.service import FacilityService
+from typing import List
 
 facility_router = APIRouter()
 FACILITY_ENDPOINT = "/facility/"
@@ -15,7 +16,7 @@ async def create_facility(
     return await facility_service.create_facility(facility)
 
 
-@facility_router.get(FACILITY_ENDPOINT, response_model=list[FacilityOut])
+@facility_router.get(FACILITY_ENDPOINT, response_model=List[FacilityOut])
 async def get_facilities(
     facility_service: FacilityService = Depends()
 ):

@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, List
 
 
 class TotalField(TypedDict):
@@ -21,7 +21,7 @@ class Waste(TotalField):
 
 class Facility(TypedDict):
     name: str
-    wastes: list[Waste]
+    wastes: List[Waste]
 
 
 class Excel(Facility):

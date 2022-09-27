@@ -3,6 +3,7 @@ from src.app.summary_report.model import SummaryReport
 from src.app.ticket.model import Ticket
 from src.app.ticket.types import MeasureSystem
 from src.app.waste.model import Waste
+from typing import List, Dict
 
 QUANTITY_BY_MEASURE = {
     MeasureSystem.TON: 0,
@@ -16,7 +17,7 @@ class ChartService:
     async def get_lineplot(self):
         repsonse = {}
         for waste in await Waste.all():
-            info: list[dict] = []
+            info: List[Dict] = []
             for sum_report in await SummaryReport.all():
                 qnt_by_measure = {**QUANTITY_BY_MEASURE}
                 for ticket in await Ticket.filter(
@@ -31,10 +32,10 @@ class ChartService:
         return repsonse
 
     async def get_barplot(self):
-        response: dict = {}
+        response: Dict = {}
 
         for sum_report in await SummaryReport.all():
-            wastes: list[dict] = []
+            wastes: List[Dict] = []
             for waste in await Waste.all():
                 qnt_by_measure = {**QUANTITY_BY_MEASURE}
                 for ticket in await Ticket.filter(

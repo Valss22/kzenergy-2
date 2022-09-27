@@ -2,7 +2,7 @@ from uuid import UUID
 from pydantic import EmailStr
 from pydantic.main import BaseModel
 from src.app.user.types import UserRole
-
+from typing import List
 
 class UserPermission(BaseModel):
     write: bool
@@ -26,5 +26,5 @@ class UserOut(BaseModel):
 
 
 class UserForAdminOut(BaseModel):
-    permanent: list[UserOut]
-    temporary: list[UserOut]
+    permanent: List[UserOut]
+    temporary: List[UserOut]

@@ -7,13 +7,14 @@ from src.app.summary_report.schemas import SummaryReportOut
 from src.app.ticket.model import Ticket
 from src.app.ticket.types import TicketStatus, MeasureSystem, WasteDestination
 from src.app.user.service import get_current_user
+from typing import List, Dict
 
-QUANTITY_BY_MEASURE: Final[dict] = {
+QUANTITY_BY_MEASURE: Final[Dict] = {
     MeasureSystem.TON: 0,
     MeasureSystem.M3: 0,
     MeasureSystem.ITEM: 0,
 }
-QNT_BY_DEST: dict[WasteDestination, float] = {
+QNT_BY_DEST: Dict[WasteDestination, float] = {
     WasteDestination.BURIED: 0,
     WasteDestination.UTILIZIED: 0,
     WasteDestination.RECYCLED: 0,
@@ -32,7 +33,7 @@ def calc_each_measure_values(
             qnt_by_dest[dest_type][0] + quantity,
             qnt_by_dest[dest_type][1], qnt_by_dest[dest_type][2]
         ]})
-        waste_dest_values: list = qnt_by_dest[dest_type]
+        waste_dest_values: List = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
                        f" + {waste_dest_values[1]} м3. +"
@@ -42,7 +43,7 @@ def calc_each_measure_values(
         qnt_by_dest.update({dest_type: [
             qnt_by_dest[dest_type][0], qnt_by_dest[dest_type][1] + quantity,
             qnt_by_dest[dest_type][2]]})
-        waste_dest_values: list = qnt_by_dest[dest_type]
+        waste_dest_values: List = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
                        f" + {waste_dest_values[1]} м3. +"
@@ -54,7 +55,7 @@ def calc_each_measure_values(
             qnt_by_dest[dest_type][1],
             qnt_by_dest[dest_type][2] + quantity]
         })
-        waste_dest_values: list = qnt_by_dest[dest_type]
+        waste_dest_values: List = qnt_by_dest[dest_type]
         qnt_str_by_dest.update({
             dest_type: f"{waste_dest_values[0]} т."
                        f" + {waste_dest_values[1]} м3. +"
@@ -72,13 +73,13 @@ class SummaryReportService:
         await Ticket.filter(
             archived=False, status=TicketStatus.ACCEPTED.value
         ).update(archived=True)
-        sum_reports: list[SummaryReportOut] = await self.get_sum_reports()
+        sum_reports: List[SummaryReportOut] = await self.get_sum_reports()
         await write_excel_sum_report(sum_reports[-1])
         excel_url = cloud.upload("sum_report.xlsx", resource_type="auto")["secure_url"]
         await SummaryReport.filter(user=user).update(excel=excel_url)
 
-    async def get_sum_reports(self) -> list[SummaryReportOut]:
-        qnt_by_dest: dict[WasteDestination, Union[list, str]] = {
+    async def get_sum_reports(self) -> List[SummaryReportOut]:
+        qnt_by_dest: dict[WasteDestination, Union[List, str]] = {
             WasteDestination.BURIED: [0, 0, 0],
             WasteDestination.UTILIZIED: [0, 0, 0],
             WasteDestination.RECYCLED: [0, 0, 0],
@@ -86,15 +87,15 @@ class SummaryReportService:
             WasteDestination.REUSED: [0, 0, 0],
         }
 
-        qnt_str_by_dest: dict[WasteDestination, Union[list, str]] = {**QNT_BY_DEST}
+        qnt_str_by_dest: Dict[WasteDestination, Union[List, str]] = {**QNT_BY_DEST}
 
-        response: list[SummaryReportOut] = []
+        response: List[SummaryReportOut] = []
         sum_reports = await SummaryReport.all().prefetch_related("user")
-        sum_reports = list(reversed(sum_reports))
+        sum_reports = List(reversed(sum_reports))
 
         for sum_report in sum_reports:
             total_in_sum_report = {**QUANTITY_BY_MEASURE}
-            tickets_response: list[dict] = []
+            tickets_response: List[dict] = []
 
             tickets = await Ticket.filter(
                 report__summaryReport_id=sum_report.id

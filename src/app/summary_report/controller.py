@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Header, Depends
-
+from typing import List
 from src.app.summary_report.schemas import SummaryReportOut
 from src.app.summary_report.service import SummaryReportService
 
@@ -15,7 +15,7 @@ async def create_sum_report(
     return await summary_report_service.create_sum_report(Authorization)
 
 
-@summary_report_router.get("/archive/summary/", response_model=list[SummaryReportOut])
+@summary_report_router.get("/archive/summary/", response_model=List[SummaryReportOut])
 async def get_sum_report(
     summary_report_service: SummaryReportService = Depends()
 ):

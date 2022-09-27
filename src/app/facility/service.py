@@ -4,6 +4,7 @@ from src.app.facility.schemas import FacilityIn, FacilityTicketsOut, FacilityTot
 from src.app.report.model import Report
 from src.app.ticket.model import Ticket
 from src.app.waste.model import Waste
+from typing import List, Dict
 
 
 class FacilityService:
@@ -87,7 +88,7 @@ class FacilityService:
             ticket_obj.usedInReport = bool(ticket_obj.report)
             await ticket_obj.save(update_fields=["usedInReport"])
 
-        tickets: dict[str, list[Ticket]] = {}
+        tickets: Dict[str, List[Ticket]] = {}
 
         for ticket in tickets_objs:
             facility_name = ticket.facility.name

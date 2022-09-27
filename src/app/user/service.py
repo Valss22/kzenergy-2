@@ -1,5 +1,5 @@
 from time import time
-from typing import Union
+from typing import Dict, Union
 import bcrypt
 import jwt
 from fastapi import HTTPException
@@ -13,12 +13,14 @@ from src.app.user.permission.model import Permission
 from src.app.user.permission.schemas import UserForAdminOut, UserPermission
 from src.app.user.schemas import UserRegisterIn, UserLoginIn, UserPermissionPatch
 from src.app.user.types import UserRole
+from typing import List
+
 
 ADMIN_EMAIL = "deger.begerrr@gmail.com"
 
 
 async def get_current_user(auth_header: str) -> User:
-    decoded_token: dict = jwt.decode(
+    decoded_token: Dict = jwt.decode(
         auth_header.split(" ")[1],
         TOKEN_KEY, algorithms="HS256"  # type: ignore
     )
@@ -41,8 +43,8 @@ class UserService:
                 detail="You dont have rights for this role",
             )
 
-    def response_with_token(self, user: User) -> dict:
-        payload: dict = {
+    def response_with_token(self, user: User) -> Dict:
+        payload: Dict = {
             "id": str(user.id),
             "email": user.email,
             "exp": time() + TOKEN_TIME
@@ -75,7 +77,7 @@ class UserService:
 
         return self.response_with_token(created_user)
 
-    async def auth_user(self, user: UserLoginIn) -> Union[dict, JSONResponse]:
+    async def auth_user(self, user: UserLoginIn) -> Union[Dict, JSONResponse]:
         email: EmailStr = user.dict()["email"]
         password = user.dict()["password"].encode()
 
@@ -90,7 +92,7 @@ class UserService:
         return self.failed_response()
 
     async def get_users(self):
-        async def get_arr_users(users: list[User]) -> list[dict]:
+        async def get_arr_users(users: List[User]) -> List[Dict]:
             user_arr = []
             for user in users:
                 permission = await Permission.get(user=user)

@@ -5,22 +5,22 @@ from src.app.report.schemas import ReportOut
 from src.app.settings import to_camel
 from src.app.ticket.schemas import TicketOut
 from src.app.waste.schemas import WasteOut
-
+from typing import List, Dict
 
 class FacilityIn(BaseModel):
     name: str
-    wastes: list[str]
+    wastes: List[str]
 
 
 class FacilityOut(BaseModel):
     id: UUID
     name: str
-    wastes: list[WasteOut]
+    wastes: List[WasteOut]
 
 
 class FacilityTicketsOut(BaseModel):
     report: Optional[ReportOut]
-    tickets: list[TicketOut]
+    tickets: List[TicketOut]
 
 
 class Report(ReportOut):
@@ -28,8 +28,8 @@ class Report(ReportOut):
 
 
 class FacilityTotalOut(BaseModel):
-    reports: list[Report]
-    tickets: dict[str, list[TicketOut]]
+    reports: List[Report]
+    tickets: Dict[str, List[TicketOut]]
     facility_number: int
 
     class Config:
