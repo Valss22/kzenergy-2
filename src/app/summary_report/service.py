@@ -1,4 +1,4 @@
-from typing import Final, Union
+from typing import Union
 import cloudinary.uploader as cloud
 from src.app.report.model import Report
 from src.app.summary_report.excel.service import write_excel_sum_report
@@ -9,7 +9,7 @@ from src.app.ticket.types import TicketStatus, MeasureSystem, WasteDestination
 from src.app.user.service import get_current_user
 from typing import List, Dict
 
-QUANTITY_BY_MEASURE: Final[Dict] = {
+QUANTITY_BY_MEASURE: Dict = {
     MeasureSystem.TON: 0,
     MeasureSystem.M3: 0,
     MeasureSystem.ITEM: 0,
