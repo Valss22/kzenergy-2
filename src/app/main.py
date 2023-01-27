@@ -24,9 +24,9 @@ app.add_middleware(
 )
 
 cloudinary.config(
-    cloud_name="dmh0ekjaw",
-    api_key="963345615946785",
-    api_secret="JqFaq0KIFuk6rx-Z8eJSK-Gfpgc",
+    cloud_name=os.getenv("CLOUD_NAME"),
+    api_key=os.getenv("CLOUD_API_KEY"),
+    api_secret=os.getenv("CLOUD_API_SECRET"),
 )
 
 app.include_router(api_router)
